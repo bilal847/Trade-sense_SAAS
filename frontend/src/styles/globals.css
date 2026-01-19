@@ -1,0 +1,182 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 249, 250, 251;
+  --background-end-rgb: 255, 255, 255;
+
+  /* Brand Colors */
+  --color-primary: 37, 99, 235;
+  /* blue-600 */
+  --color-secondary: 147, 51, 234;
+  /* purple-600 */
+  --color-accent: 6, 182, 212;
+  /* cyan-500 */
+}
+
+.dark {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 3, 7, 18;
+  /* slate-950 */
+  --background-end-rgb: 15, 23, 42;
+  /* slate-900 */
+}
+
+/* Light mode base styles */
+body {
+  @apply bg-gray-50 text-gray-900 selection:bg-blue-100;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+/* Dark mode base styles */
+.dark body {
+  @apply bg-[#030712] text-slate-100 selection:bg-blue-500/30;
+}
+
+@layer components {
+  .glass {
+    @apply bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border border-white/20 dark:border-slate-800/50 shadow-xl;
+  }
+
+  .glass-morphism {
+    @apply bg-white/10 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-white/10 shadow-2xl;
+  }
+
+  .premium-card {
+    @apply relative overflow-hidden rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-blue-500/10;
+  }
+
+  .text-glow-blue {
+    text-shadow: 0 0 20px rgba(37, 99, 235, 0.5);
+  }
+
+  .text-glow-purple {
+    text-shadow: 0 0 20px rgba(147, 51, 234, 0.5);
+  }
+
+  .bg-gradient-premium {
+    @apply bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900;
+  }
+}
+
+@layer utilities {
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 3s ease-in-out infinite;
+  }
+
+  .animate-shimmer {
+    background: linear-gradient(90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.05) 50%,
+        rgba(255, 255, 255, 0) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite linear;
+  }
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-20px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@keyframes pulse-glow {
+
+  0%,
+  100% {
+    opacity: 0.5;
+    filter: blur(40px);
+  }
+
+  50% {
+    opacity: 0.8;
+    filter: blur(60px);
+  }
+}
+
+@keyframes shimmer {
+  from {
+    background-position: -200% 0;
+  }
+
+  to {
+    background-position: 200% 0;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-700/50 rounded-full hover:bg-slate-600 transition-colors;
+}
+
+/* Trading specific styles */
+.chart-container {
+  width: 100%;
+  height: 500px;
+}
+
+.watchlist-item {
+  @apply p-3 border-b border-gray-200 dark:border-gray-800 hover:bg-gray-100 dark:hover:bg-slate-800/50 cursor-pointer transition-colors;
+}
+
+.trade-ticket {
+  @apply bg-white dark:bg-slate-900/80 backdrop-blur p-4 rounded-xl border border-gray-200 dark:border-slate-800 shadow-sm;
+}
+
+.signal-card {
+  @apply bg-white dark:bg-slate-900/80 backdrop-blur p-4 rounded-xl border-l-4 shadow-sm transition-all hover:scale-[1.02];
+}
+
+.signal-card.long {
+  @apply border-emerald-500 text-emerald-600 dark:text-emerald-400;
+}
+
+.signal-card.short {
+  @apply border-rose-500 text-rose-600 dark:text-rose-400;
+}
+
+.signal-card.neutral {
+  @apply border-amber-500 text-amber-600 dark:text-amber-400;
+}
+
+.risk-meter {
+  @apply w-full bg-slate-200 dark:bg-slate-800 rounded-full h-2;
+}
+
+.risk-meter-fill {
+  @apply h-2 rounded-full transition-all duration-500;
+}
+
+.risk-meter-safe {
+  @apply bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)];
+}
+
+.risk-meter-warning {
+  @apply bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.3)];
+}
+
+.risk-meter-danger {
+  @apply bg-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.3)];
+}

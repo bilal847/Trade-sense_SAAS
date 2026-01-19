@@ -1,0 +1,99 @@
+TradeSense-Quant/
+├── backend/
+│   ├── app/
+│   │   ├── __init__.py
+│   │   ├── config.py
+│   │   ├── models/
+│   │   │   ├── __init__.py
+│   │   │   ├── base.py
+│   │   │   ├── user.py
+│   │   │   ├── instrument.py
+│   │   │   ├── challenge.py
+│   │   │   ├── position.py
+│   │   │   ├── trade.py
+│   │   │   ├── equity_snapshot.py
+│   │   │   ├── watchlist.py
+│   │   │   ├── learning.py
+│   │   │   └── payment.py
+│   │   ├── services/
+│   │   │   ├── __init__.py
+│   │   │   ├── auth_service.py
+│   │   │   ├── market_data_service.py
+│   │   │   ├── risk_service.py
+│   │   │   ├── challenge_service.py
+│   │   │   ├── signals_service.py
+│   │   │   └── leaderboard_service.py
+│   │   ├── providers/
+│   │   │   ├── __init__.py
+│   │   │   ├── base_provider.py
+│   │   │   ├── binance_provider.py
+│   │   │   ├── mt5_provider.py
+│   │   │   └── morocco_provider.py
+│   │   ├── api/
+│   │   │   ├── __init__.py
+│   │   │   ├── v1/
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── auth_bp.py
+│   │   │   │   ├── market_bp.py
+│   │   │   │   ├── challenge_bp.py
+│   │   │   │   ├── leaderboard_bp.py
+│   │   │   │   ├── payment_bp.py
+│   │   │   │   └── learning_bp.py
+│   │   │   └── swagger.py
+│   │   └── utils/
+│   │       ├── __init__.py
+│   │       ├── cache.py
+│   │       ├── validation.py
+│   │       └── helpers.py
+│   ├── migrations/
+│   ├── tests/
+│   │   ├── __init__.py
+│   │   ├── test_risk_service.py
+│   │   ├── test_binance_provider.py
+│   │   └── conftest.py
+│   ├── requirements.txt
+│   ├── run.py
+│   └── .env.example
+├── frontend/
+│   ├── package.json
+│   ├── next.config.js
+│   ├── tsconfig.json
+│   ├── .env.example
+│   ├── public/
+│   │   └── favicon.ico
+│   ├── src/
+│   │   ├── pages/
+│   │   │   ├── _app.tsx
+│   │   │   ├── _document.tsx
+│   │   │   ├── index.tsx
+│   │   │   ├── dashboard.tsx
+│   │   │   ├── challenges.tsx
+│   │   │   ├── leaderboard.tsx
+│   │   │   ├── learning.tsx
+│   │   │   └── account/
+│   │   │       └── billing.tsx
+│   │   ├── components/
+│   │   │   ├── Dashboard/
+│   │   │   │   ├── ChartContainer.tsx
+│   │   │   │   ├── Watchlist.tsx
+│   │   │   │   ├── SignalsPanel.tsx
+│   │   │   │   ├── RiskPanel.tsx
+│   │   │   │   └── TradeTicket.tsx
+│   │   │   ├── Common/
+│   │   │   │   ├── Header.tsx
+│   │   │   │   ├── Sidebar.tsx
+│   │   │   │   └── Layout.tsx
+│   │   │   └── Learning/
+│   │   │       └── ModuleViewer.tsx
+│   │   ├── services/
+│   │   │   ├── api.ts
+│   │   │   └── auth.ts
+│   │   ├── types/
+│   │   │   └── index.ts
+│   │   └── styles/
+│   │       └── globals.css
+│   └── Dockerfile
+├── docker-compose.yml
+├── database.sql
+├── README.md
+└── Design-Decisions.md

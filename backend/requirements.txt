@@ -1,0 +1,16 @@
+Flask==2.3.3
+Flask-SQLAlchemy==3.0.5
+Flask-Migrate==4.0.5
+Flask-Bcrypt==1.0.1
+Flask-JWT-Extended==4.5.3
+Flask-CORS==4.0.0
+requests==2.31.0
+python-binance==1.0.19
+beautifulsoup4==4.12.2
+redis==5.0.1
+python-dateutil==2.8.2
+pytz==2023.3
+flask-swagger-ui==4.11.1
+pandas>=2.2.0
+numpy>=1.26.0
+gunicorn==21.2.0
