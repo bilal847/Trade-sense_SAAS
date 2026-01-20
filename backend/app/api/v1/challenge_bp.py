@@ -111,8 +111,13 @@ def get_user_challenge(user_challenge_id):
         # Evaluate the challenge to get current status
         evaluation = challenge_service.evaluate_challenge(user_challenge)
         
+        # Helper serialization
+        data = user_challenge.to_dict()
+        if user_challenge.challenge:
+             data['challenge'] = user_challenge.challenge.to_dict()
+
         return jsonify({
-            'user_challenge': user_challenge.to_dict(),
+            'user_challenge': data,
             'evaluation': evaluation
         }), 200
     

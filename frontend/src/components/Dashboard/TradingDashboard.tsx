@@ -64,6 +64,15 @@ const generateMockOHLCV = (instrumentId: number, count: number): OHLCV[] => {
 
 const TradingDashboard: React.FC<{ userChallenge: UserChallenge; user: any }> = ({ userChallenge, user }) => {
   const { t } = useTranslation();
+
+  // DEBUG: Inspect challenge rules
+  useEffect(() => {
+    console.log('[Dashboard] UserChallenge Prop:', userChallenge);
+    if (userChallenge?.challenge) {
+      console.log('[Dashboard] Max Qty Rule:', userChallenge.challenge.max_trade_quantity);
+    }
+  }, [userChallenge]);
+
   const [instruments, setInstruments] = useState<Instrument[]>([]);
   const [selectedInstrument, setSelectedInstrument] = useState<Instrument | null>(null);
   const [quote, setQuote] = useState<Quote | null>(null);

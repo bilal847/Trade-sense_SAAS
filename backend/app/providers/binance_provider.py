@@ -56,8 +56,13 @@ class BinanceProvider(BaseProvider):
             import random
             current_time = int(time.time() * 1000)
             
-            # Simple simulation: fluctuate around a base price (e.g., 40000 for BTC)
-            base_price = 42000.0 if instrument == 'BTCUSDT' else 2250.0 if instrument == 'ETHUSDT' else 1.0
+            # Simple simulation: fluctuate around a base price
+            if instrument == 'BTCUSDT':
+                base_price = 90918.0
+            elif instrument == 'ETHUSDT':
+                base_price = 5200.0
+            else:
+                base_price = 1.0
             jitter = 1.0 + (math.sin(time.time() * 0.5) * 0.0005) + (random.uniform(-0.0002, 0.0002))
             last_price = round(base_price * jitter, 2)
             
@@ -105,8 +110,51 @@ class BinanceProvider(BaseProvider):
             
             return ohlcv_list
         except Exception as e:
-            # Return empty list if API fails
-            return []
+            # Return synthetic data if API fails
+            import random
+            current_time = int(time.time() * 1000)
+            
+            # Determine base price based on instrument
+            if instrument == 'BTCUSDT': base_price = 90918.0
+            elif instrument == 'ETHUSDT': base_price = 5200.0
+            else: base_price = 100.0
+            
+            ohlcv_list = []
+            
+            # Determine period in ms
+            period_ms = 3600000 # Default 1h
+            if timeframe == '1m': period_ms = 60000
+            elif timeframe == '5m': period_ms = 300000
+            elif timeframe == '15m': period_ms = 900000
+            elif timeframe == '1d': period_ms = 86400000
+            
+            # Generate realistic random walk history
+            price = base_price
+            for i in range(limit):
+                ts = current_time - (i * period_ms)
+                
+                # Volatility
+                volatility = 0.005
+                
+                change_pct = random.uniform(-volatility, volatility)
+                close_p = price
+                open_p = price * (1 - change_pct)
+                
+                high_p = max(open_p, close_p) * (1 + random.uniform(0, volatility/2))
+                low_p = min(open_p, close_p) * (1 - random.uniform(0, volatility/2))
+                
+                ohlcv_list.append({
+                    'timestamp': ts,
+                    'open': round(open_p, 2),
+                    'high': round(high_p, 2),
+                    'low': round(low_p, 2),
+                    'close': round(close_p, 2),
+                    'volume': float(random.uniform(100, 5000))
+                })
+                
+                price = open_p
+                
+            return list(reversed(ohlcv_list))
     
     def get_supported_instruments(self) -> List[Dict]:
         """
