@@ -25,20 +25,29 @@ def seed_database():
         print("Starting database seeding...")
         
         # Create default challenge if none exists
-        if not Challenge.query.first():
-            default_challenge = Challenge(
+        # Create or Update Default Challenge
+        challenge = Challenge.query.first()
+        if not challenge:
+            challenge = Challenge(
                 name="Standard Challenge",
                 description="Standard prop firm challenge with 10k balance",
                 start_balance=10000.0,
-                daily_max_loss=0.05,  # 5% daily max loss
-                total_max_loss=0.10,  # 10% total max loss
-                profit_target=0.10,   # 10% profit target
-                max_trade_quantity=5.0, # 5 units per trade limit
+                daily_max_loss=0.05,
+                total_max_loss=0.10,
+                profit_target=0.10,
+                max_trade_quantity=5.0,
                 is_active=True
             )
-            db.session.add(default_challenge)
-            db.session.commit()
+            db.session.add(challenge)
             print("Created default challenge")
+        else:
+            # Patch existing challenge to ensure rules are up to date
+            challenge.max_trade_quantity = 5.0
+            challenge.daily_max_loss = 0.05
+            challenge.total_max_loss = 0.10
+            print("Updated existing challenge rules")
+        
+        db.session.commit()
         
         # Create default instruments if none exist
         if not Instrument.query.first():
