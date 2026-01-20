@@ -16,25 +16,22 @@ export default function CMIPayment() {
         setLoading(true);
         try {
             // Simulate CMI processing (Fast for demo)
-            await new Promise(resolve => setTimeout(resolve, 500));
+            await new Promise(resolve => setTimeout(resolve, 800));
 
-            try {
-                const startResponse = await paymentAPI.mockCheckout(
-                    (plan as any) || 'PRO',
-                    parseFloat(amount as string) || 99,
-                    'USD'
-                );
-                if (startResponse.data?.payment?.id) {
-                    await paymentAPI.mockConfirm(startResponse.data.payment.id);
-                }
-            } catch (e) {
-                // Ignore backend errors for demo - FORCE SUCCESS
-                console.warn("Backend mock payment failed, proceeding anyway for demo", e);
+            const startResponse = await paymentAPI.mockCheckout(
+                (plan as any) || 'STUDENT',
+                parseFloat(amount as string) || 49,
+                'USD'
+            );
+
+            if (startResponse.data?.payment?.id) {
+                await paymentAPI.mockConfirm(startResponse.data.payment.id);
             }
 
             router.push('/dashboard?success=true');
-        } catch (error) {
-            router.push('/dashboard?success=true');
+        } catch (error: any) {
+            console.error("Payment flow failed:", error);
+            alert(`Payment System Error: ${error.response?.data?.error || error.message || 'Unknown Error'}`);
         } finally {
             setLoading(false);
         }

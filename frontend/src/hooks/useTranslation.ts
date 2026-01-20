@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { translations, Locale, TranslationKey } from '@/locales/translations';
 
 export const useTranslation = () => {
@@ -24,17 +24,17 @@ export const useTranslation = () => {
         }
     };
 
-    const setLocale = (newLocale: Locale) => {
+    const setLocale = useCallback((newLocale: Locale) => {
         setLocaleState(newLocale);
         applyLocale(newLocale);
         if (typeof window !== 'undefined') {
             localStorage.setItem('locale', newLocale);
         }
-    };
+    }, []);
 
-    const t = (key: TranslationKey): string => {
+    const t = useCallback((key: TranslationKey): string => {
         return translations[locale][key] || key;
-    };
+    }, [locale]);
 
-    return { t, locale, setLocale };
+    return useMemo(() => ({ t, locale, setLocale }), [t, locale, setLocale]);
 };

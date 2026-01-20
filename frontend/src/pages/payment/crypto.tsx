@@ -12,25 +12,22 @@ export default function CryptoPayment() {
         setLoading(true);
         try {
             // Simulate blockchain confirmation mock (Fast for demo)
-            await new Promise(resolve => setTimeout(resolve, 500));
+            await new Promise(resolve => setTimeout(resolve, 1000));
 
-            try {
-                const startResponse = await paymentAPI.mockCheckout(
-                    (plan as any) || 'PRO',
-                    parseFloat(amount as string) || 99,
-                    'USD'
-                );
+            const startResponse = await paymentAPI.mockCheckout(
+                (plan as any) || 'STUDENT',
+                parseFloat(amount as string) || 49,
+                'USD'
+            );
 
-                if (startResponse.data?.payment?.id) {
-                    await paymentAPI.mockConfirm(startResponse.data.payment.id);
-                }
-            } catch (e) {
-                console.warn("Backend error ignored for demo");
+            if (startResponse.data?.payment?.id) {
+                await paymentAPI.mockConfirm(startResponse.data.payment.id);
             }
 
             router.push('/dashboard?success=true');
-        } catch (error) {
-            router.push('/dashboard?success=true');
+        } catch (error: any) {
+            console.error("Crypto payment failed:", error);
+            alert(`Blockchain Protocol Error: ${error.response?.data?.error || error.message || 'Unknown Error'}`);
         } finally {
             setLoading(false);
         }

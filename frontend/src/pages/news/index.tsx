@@ -1,4 +1,25 @@
 import React, { useState, useEffect } from 'react';
+import Head from 'next/head';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+    Newspaper,
+    Search,
+    Filter,
+    RefreshCw,
+    TrendingUp,
+    TrendingDown,
+    Globe,
+    ExternalLink,
+    Clock,
+    ChevronRight,
+    X,
+    LayoutGrid,
+    MessageSquare,
+    AlertCircle,
+    Zap,
+    ArrowUpRight,
+    LucideIcon
+} from 'lucide-react';
 import Layout from '@/components/Common/Layout';
 import { featuresAPI } from '@/services/api';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -27,7 +48,7 @@ const NewsHub: React.FC = () => {
         } catch (e) {
             console.error('Failed to fetch news:', e);
         } finally {
-            setLoading(false);
+            setTimeout(() => setLoading(false), 800); // Smooth transition
         }
     };
 
@@ -59,215 +80,363 @@ const NewsHub: React.FC = () => {
     // Get unique impacts for filter
     const uniqueImpacts = ['All', ...Array.from(new Set(newsData.map(n => n.impact).filter(Boolean)))];
 
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: { staggerChildren: 0.1 }
+        }
+    };
+
+    const itemVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: { duration: 0.5 }
+        }
+    };
+
+    const getAssetIcon = (asset: string): React.ReactNode => {
+        switch (asset) {
+            case 'BTCUSDT': return <span className="text-orange-400">₿</span>;
+            case 'ETHUSDT': return <span className="text-blue-400">Ξ</span>;
+            case 'EURUSD': return <span className="text-blue-500">€</span>;
+            case 'GBPUSD': return <span className="text-pink-500">£</span>;
+            case 'NAS100': return <LayoutGrid className="w-3 h-3 text-cyan-400" />;
+            case 'XAUUSD': return <span className="text-yellow-400">Au</span>;
+            case 'USOIL': return <Zap className="w-3 h-3 text-orange-500" />;
+            default: return <Globe className="w-3 h-3 text-slate-400" />;
+        }
+    };
+
     return (
-        <Layout title={`${t('news_title')} | TradeSense`}>
-            <div className="min-h-screen">
+        <Layout>
+            <Head>
+                <title>Global Intelligence Hub | TradeSense</title>
+            </Head>
+
+            <div className="min-h-screen bg-[#030712] text-slate-200 selection:bg-orange-500/30">
                 {/* Hero Section */}
-                <div className="bg-gradient-to-r from-orange-600 via-red-600 to-pink-600 py-16 shadow-lg">
-                    <div className="container mx-auto px-4">
-                        <div className="flex items-center justify-center mb-6">
-                            <div className="bg-white/20 p-4 rounded-2xl backdrop-blur-md mr-6 shadow-xl border border-white/20">
-                                <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
-                                </svg>
-                            </div>
-                            <h1 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight uppercase">{t('news_title')}</h1>
-                        </div>
-                        <p className="text-center text-white/90 text-xl max-w-2xl mx-auto font-medium leading-relaxed">
-                            {t('news_loading').replace('...', '')} {t('news_impact')} detection
-                        </p>
-                    </div>
-                </div>
+                <section className="relative pt-32 pb-20 overflow-hidden border-b border-white/5">
+                    {/* Background Gradients */}
+                    <div className="absolute top-0 left-1/4 w-96 h-96 bg-orange-600/10 rounded-full blur-[120px] -z-10" />
+                    <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-red-600/5 rounded-full blur-[120px] -z-10" />
 
-                {/* Filters */}
-                <div className="container mx-auto px-4 py-8">
-                    <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-xl border border-gray-100 dark:border-gray-700 mb-10">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            {/* Search */}
-                            <div>
-                                <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-widest">Search</label>
-                                <div className="relative">
-                                    <input
-                                        type="text"
-                                        placeholder="Search market news..."
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                        className="w-full bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 focus:ring-2 focus:ring-orange-500 outline-none transition-all pl-10"
-                                    />
-                                    <svg className="w-5 h-5 text-gray-400 absolute left-3 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                                </div>
+                    <div className="container mx-auto px-6 relative">
+                        <motion.div
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8 }}
+                            className="max-w-4xl"
+                        >
+                            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-500 text-xs font-bold uppercase tracking-widest mb-6">
+                                <span className="relative flex h-2 w-2">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-500"></span>
+                                </span>
+                                <span>Real-Time Intelligence Pipeline</span>
                             </div>
 
-                            {/* Sentiment Filter */}
-                            <div>
-                                <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-widest">{t('news_sentiment')}</label>
-                                <select
-                                    value={selectedSentiment}
-                                    onChange={(e) => setSelectedSentiment(e.target.value)}
-                                    className="w-full bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 focus:ring-2 focus:ring-orange-500 outline-none transition-all appearance-none cursor-pointer"
-                                >
-                                    <option value="All">All Sentiments</option>
-                                    <option value="Bullish">Bullish</option>
-                                    <option value="Bearish">Bearish</option>
-                                    <option value="Neutral">Neutral</option>
-                                </select>
-                            </div>
+                            <h1 className="text-5xl md:text-7xl font-black mb-8 leading-tight tracking-tighter">
+                                Market Narratives. <br />
+                                <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-400 via-red-500 to-pink-500">
+                                    Synthesized for Execution.
+                                </span>
+                            </h1>
 
-                            {/* Impact Filter */}
-                            <div>
-                                <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-widest">{t('news_impact')}</label>
-                                <select
-                                    value={selectedImpact}
-                                    onChange={(e) => setSelectedImpact(e.target.value)}
-                                    className="w-full bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 focus:ring-2 focus:ring-orange-500 outline-none transition-all appearance-none cursor-pointer"
-                                >
-                                    {uniqueImpacts.map(impact => (
-                                        <option key={impact} value={impact}>{impact}</option>
-                                    ))}
-                                </select>
-                            </div>
-                        </div>
-
-                        <div className="mt-8 flex items-center justify-between border-t border-gray-100 dark:border-gray-700 pt-6">
-                            <p className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                Showing <span className="text-orange-600">{filteredNews.length}</span> of {newsData.length} articles
+                            <p className="text-xl text-slate-400 max-w-2xl font-medium leading-relaxed mb-10">
+                                Advanced NLP engine processing thousands of global data points per second.
+                                Detect sentiment shifts before they hit the tape.
                             </p>
-                            <button
-                                onClick={fetchNews}
-                                className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-xl font-bold transition-all flex items-center shadow-lg shadow-orange-500/30"
-                            >
-                                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                                </svg>
-                                Refresh
-                            </button>
+                        </motion.div>
+                    </div>
+                </section>
+
+                {/* Filter & Search Bar */}
+                <section className="sticky top-0 z-40 bg-[#030712]/80 backdrop-blur-xl border-b border-white/5 py-6">
+                    <div className="container mx-auto px-6">
+                        <div className="flex flex-col lg:flex-row gap-6 items-center">
+                            {/* Search */}
+                            <div className="relative w-full lg:w-96">
+                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                                <input
+                                    type="text"
+                                    placeholder="Search narratives..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-12 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all placeholder:text-slate-600"
+                                />
+                            </div>
+
+                            <div className="flex flex-wrap items-center gap-4 w-full">
+                                <div className="flex items-center space-x-2 bg-white/5 p-1 rounded-xl border border-white/10">
+                                    {['All', 'Bullish', 'Neutral', 'Bearish'].map(s => (
+                                        <button
+                                            key={s}
+                                            onClick={() => setSelectedSentiment(s)}
+                                            className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${selectedSentiment === s
+                                                ? 'bg-orange-600 text-white shadow-lg shadow-orange-900/20'
+                                                : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
+                                        >
+                                            {s}
+                                        </button>
+                                    ))}
+                                </div>
+
+                                <div className="h-6 w-px bg-white/10 hidden md:block" />
+
+                                <div className="flex items-center space-x-2">
+                                    <Filter className="w-4 h-4 text-slate-500" />
+                                    <select
+                                        value={selectedImpact}
+                                        onChange={(e) => setSelectedImpact(e.target.value)}
+                                        className="bg-transparent text-sm font-bold focus:outline-none cursor-pointer text-slate-300"
+                                    >
+                                        {uniqueImpacts.map(impact => (
+                                            <option key={impact} value={impact} className="bg-[#030712]">{impact}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <button
+                                    onClick={fetchNews}
+                                    className="ml-auto p-2 hover:bg-white/5 rounded-lg transition-colors group"
+                                    title="Refresh Pipeline"
+                                >
+                                    <RefreshCw className={`w-4 h-4 text-slate-500 group-hover:text-orange-500 transition-all ${loading ? 'animate-spin text-orange-500' : ''}`} />
+                                </button>
+                            </div>
                         </div>
                     </div>
+                </section>
 
-                    {/* News Grid */}
-                    {loading ? (
-                        <div className="flex flex-col items-center justify-center py-24">
-                            <div className="animate-spin h-16 w-16 border-4 border-orange-500 rounded-full border-t-transparent mb-6 shadow-2xl"></div>
-                            <p className="text-gray-500 dark:text-gray-400 text-lg font-bold animate-pulse">{t('news_loading')}</p>
-                        </div>
-                    ) : filteredNews.length === 0 ? (
-                        <div className="text-center py-24 bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-xl">
-                            <div className="w-24 h-24 bg-gray-50 dark:bg-gray-900 rounded-full flex items-center justify-center mx-auto mb-6 text-gray-300 dark:text-gray-600">
-                                <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
+                {/* News Grid */}
+                <section className="py-20">
+                    <div className="container mx-auto px-6">
+                        {loading ? (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                {[...Array(6)].map((_, i) => (
+                                    <div key={i} className="h-[400px] bg-white/5 rounded-3xl animate-pulse border border-white/10" />
+                                ))}
                             </div>
-                            <p className="text-gray-500 dark:text-gray-400 text-xl font-bold">No news articles match your filters</p>
-                        </div>
-                    ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {filteredNews.map((item, idx) => (
-                                <div key={idx} className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700 hover:border-orange-500 dark:hover:border-orange-500 transition-all duration-300 hover:shadow-2xl hover:shadow-orange-500/10 flex flex-col group">
-                                    <div className="p-6 flex-1 flex flex-col">
-                                        <div className="flex items-start justify-between mb-4">
-                                            <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-tight flex-1 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors uppercase tracking-tight">{item.title}</h3>
-                                        </div>
+                        ) : filteredNews.length === 0 ? (
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                className="flex flex-col items-center justify-center py-40 bg-white/2 rounded-3xl border border-dashed border-white/10"
+                            >
+                                <AlertCircle className="w-16 h-16 text-slate-700 mb-6" />
+                                <h3 className="text-2xl font-bold text-slate-400">Zero Signal Match</h3>
+                                <p className="text-slate-500 mt-2">Adjust your filters to scan broader markets.</p>
+                            </motion.div>
+                        ) : (
+                            <motion.div
+                                variants={containerVariants}
+                                initial="hidden"
+                                animate="visible"
+                                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                            >
+                                {filteredNews.map((item, idx) => (
+                                    <motion.div
+                                        key={idx}
+                                        variants={itemVariants}
+                                        className="group relative flex flex-col bg-white/2 border border-white/5 rounded-3xl overflow-hidden hover:bg-white/5 hover:border-white/10 transition-all duration-500"
+                                    >
+                                        {/* Sentiment Glow */}
+                                        <div className={`absolute top-0 left-0 w-full h-[2px] opacity-30 group-hover:opacity-100 transition-opacity ${item.sentiment === 'Bullish' ? 'bg-emerald-500' : item.sentiment === 'Bearish' ? 'bg-rose-500' : 'bg-blue-500'}`} />
 
-                                        <div className="flex flex-wrap gap-2 mb-4">
-                                            <span className={`text-xs px-2.5 py-1 rounded-full font-bold shadow-sm ring-1 ${item.sentiment === 'Bullish' ? 'bg-green-100 text-green-700 ring-green-200 dark:bg-green-900/30 dark:text-green-400 dark:ring-green-800' : item.sentiment === 'Bearish' ? 'bg-red-100 text-red-700 ring-red-200 dark:bg-red-900/30 dark:text-red-400 dark:ring-red-800' : 'bg-gray-100 text-gray-700 ring-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:ring-gray-600'}`}>
-                                                {item.sentiment}
-                                            </span>
-                                            {item.impact && item.impact !== 'Global' && (
-                                                <span className="text-xs px-2.5 py-1 rounded-full font-bold bg-blue-50 text-blue-700 border border-blue-100 shadow-sm dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800 uppercase tracking-widest">
-                                                    {item.impact}
-                                                </span>
-                                            )}
-                                        </div>
+                                        <div className="p-8 flex flex-col h-full">
+                                            {/* Header Tags */}
+                                            <div className="flex items-center justify-between mb-6">
+                                                <div className="flex items-center space-x-2">
+                                                    <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center font-bold text-sm">
+                                                        {getAssetIcon(item.impact)}
+                                                    </div>
+                                                    <span className="text-xs font-black uppercase tracking-widest text-slate-400">
+                                                        {item.impact || 'Global'}
+                                                    </span>
+                                                </div>
 
-                                        <p className="text-gray-600 dark:text-gray-400 text-sm mb-6 flex-1 line-clamp-3 leading-relaxed font-medium">{item.summary}</p>
-
-                                        <div className="flex items-center justify-between mt-auto pt-6 border-t border-gray-50 dark:border-gray-700/50">
-                                            <div className="text-xs font-bold text-gray-400 uppercase tracking-widest">
-                                                {item.source} • {item.timestamp}
+                                                <div className="flex items-center space-x-2 text-[10px] font-black uppercase tracking-widest opacity-60">
+                                                    <Clock className="w-3 h-3" />
+                                                    <span>{item.timestamp.split('T')[0] || item.timestamp}</span>
+                                                </div>
                                             </div>
-                                            <button
-                                                onClick={() => handleReadArticle(item.url)}
-                                                className="text-orange-600 dark:text-orange-400 font-bold text-sm flex items-center hover:underline"
-                                            >
-                                                {t('news_read_more')}
-                                                <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                                            </button>
+
+                                            {/* Title */}
+                                            <h3 className="text-xl font-bold mb-4 leading-tight group-hover:text-white transition-colors">
+                                                {item.title}
+                                            </h3>
+
+                                            {/* Sentiment Indicator */}
+                                            <div className="flex items-center space-x-4 mb-6">
+                                                <div className={`flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter ${item.sentiment === 'Bullish' ? 'text-emerald-400 bg-emerald-500/10' :
+                                                        item.sentiment === 'Bearish' ? 'text-rose-400 bg-rose-500/10' :
+                                                            'text-blue-400 bg-blue-500/10'
+                                                    }`}>
+                                                    {item.sentiment === 'Bullish' ? <TrendingUp className="w-3 h-3" /> :
+                                                        item.sentiment === 'Bearish' ? <TrendingDown className="w-3 h-3" /> :
+                                                            <Globe className="w-3 h-3" />}
+                                                    <span>{item.sentiment}</span>
+                                                </div>
+
+                                                <div className="h-1 flex-1 bg-white/5 rounded-full overflow-hidden">
+                                                    <motion.div
+                                                        initial={{ width: 0 }}
+                                                        animate={{ width: item.sentiment === 'Neutral' ? '50%' : '85%' }}
+                                                        transition={{ duration: 1, delay: idx * 0.1 }}
+                                                        className={`h-full ${item.sentiment === 'Bullish' ? 'bg-emerald-500' :
+                                                                item.sentiment === 'Bearish' ? 'bg-rose-500' :
+                                                                    'bg-blue-500'
+                                                            }`}
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            {/* Summary */}
+                                            <p className="text-sm text-slate-400 font-medium leading-relaxed mb-8 line-clamp-3">
+                                                {item.summary}
+                                            </p>
+
+                                            {/* Footer */}
+                                            <div className="mt-auto pt-6 border-t border-white/5 flex items-center justify-between">
+                                                <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">
+                                                    Source: {item.source}
+                                                </span>
+
+                                                <button
+                                                    onClick={() => handleReadArticle(item.url)}
+                                                    className="flex items-center space-x-2 text-xs font-black uppercase tracking-widest text-orange-500 hover:text-orange-400 transition-colors"
+                                                >
+                                                    <span>Read Analysis</span>
+                                                    <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
+
+                                        {/* Hover Overlay Gradient */}
+                                        <div className="absolute inset-0 bg-gradient-to-br from-orange-500/0 via-transparent to-red-500/0 pointer-events-none group-hover:from-orange-500/5 group-hover:to-red-500/5 transition-all duration-700" />
+                                    </motion.div>
+                                ))}
+                            </motion.div>
+                        )}
+                    </div>
+                </section>
 
                 {/* Reader Modal */}
-                {showReader && (
-                    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[110] flex items-center justify-center p-4">
-                        <div className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white rounded-3xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl relative overflow-hidden border border-white/10">
-                            <button
-                                onClick={() => setShowReader(false)}
-                                className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white font-bold z-20 bg-gray-100 dark:bg-gray-800 rounded-full p-3 transition-all hover:rotate-90"
+                <AnimatePresence>
+                    {showReader && (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="fixed inset-0 bg-black/90 backdrop-blur-md z-[100] flex items-center justify-center p-4"
+                            onClick={() => setShowReader(false)}
+                        >
+                            <motion.div
+                                initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                                animate={{ scale: 1, opacity: 1, y: 0 }}
+                                exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                                className="bg-[#0b0f1a] border border-white/10 rounded-[32px] max-w-5xl w-full max-h-[90vh] flex flex-col shadow-2xl relative overflow-hidden"
+                                onClick={e => e.stopPropagation()}
                             >
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                            </button>
+                                <button
+                                    onClick={() => setShowReader(false)}
+                                    className="absolute top-6 right-6 text-slate-400 hover:text-white z-50 bg-white/5 border border-white/10 p-2 rounded-xl transition-all hover:rotate-90"
+                                >
+                                    <X className="w-5 h-5" />
+                                </button>
 
-                            {!readingArticle || readingArticle.loading ? (
-                                <div className="flex-1 flex flex-col items-center justify-center p-12">
-                                    <div className="animate-spin h-12 w-12 border-4 border-orange-500 rounded-full border-t-transparent mb-6"></div>
-                                    <p className="text-gray-500 dark:text-gray-400 font-bold text-lg animate-pulse">Fetching global intelligence...</p>
-                                </div>
-                            ) : readingArticle.error ? (
-                                <div className="p-16 text-center">
-                                    <div className="w-20 h-20 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-6 text-red-600">
-                                        <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                                {!readingArticle || readingArticle.loading ? (
+                                    <div className="flex-1 flex flex-col items-center justify-center p-20">
+                                        <div className="relative">
+                                            <div className="w-20 h-20 border-4 border-orange-500/20 rounded-full animate-spin border-t-orange-500" />
+                                            <Zap className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 text-orange-500 animate-pulse" />
+                                        </div>
+                                        <p className="mt-10 text-xl font-bold text-slate-400 animate-pulse tracking-tight">Accessing Narrative Protocol...</p>
                                     </div>
-                                    <h3 className="text-2xl font-bold mb-3">Content Unavailable</h3>
-                                    <p className="text-gray-500 dark:text-gray-400 mb-10 max-w-md mx-auto">{readingArticle.error}</p>
-                                    <a
-                                        href={readingArticle.url}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className="inline-block px-8 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 shadow-lg shadow-blue-500/30 transition-all"
-                                    >
-                                        Read on Original Site
-                                    </a>
-                                </div>
-                            ) : (
-                                <div className="flex-1 overflow-y-auto">
-                                    {/* Article Header */}
-                                    <div className="relative h-80 bg-gray-200 dark:bg-gray-800">
-                                        {readingArticle.image ? (
-                                            <img src={readingArticle.image} alt={readingArticle.title} className="w-full h-full object-cover" />
-                                        ) : (
-                                            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-orange-500 to-red-600 text-white text-3xl font-extrabold p-12 text-center uppercase tracking-tight">
-                                                {readingArticle.title}
+                                ) : readingArticle.error ? (
+                                    <div className="p-20 text-center">
+                                        <div className="w-24 h-24 bg-rose-500/10 rounded-full flex items-center justify-center mx-auto mb-8 border border-rose-500/20">
+                                            <AlertCircle className="w-12 h-12 text-rose-500" />
+                                        </div>
+                                        <h3 className="text-3xl font-black mb-4">Encryption Blocked</h3>
+                                        <p className="text-slate-400 mb-10 text-lg max-w-md mx-auto">{readingArticle.error}</p>
+                                        <a
+                                            href={readingArticle.url}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="inline-flex items-center space-x-3 px-8 py-4 bg-orange-600 hover:bg-orange-700 text-white font-black uppercase tracking-widest rounded-2xl shadow-xl shadow-orange-900/40 transition-all"
+                                        >
+                                            <span>Read Original Stream</span>
+                                            <ExternalLink className="w-5 h-5" />
+                                        </a>
+                                    </div>
+                                ) : (
+                                    <div className="flex-1 overflow-y-auto custom-scrollbar">
+                                        {/* Article Hero */}
+                                        <div className="relative h-[450px]">
+                                            {readingArticle.image ? (
+                                                <img src={readingArticle.image} alt={readingArticle.title} className="w-full h-full object-cover" />
+                                            ) : (
+                                                <div className="w-full h-full bg-gradient-to-br from-[#0b0f1a] via-orange-900/20 to-red-900/20 flex items-center justify-center p-20">
+                                                    <Newspaper className="w-32 h-32 text-white/5" />
+                                                </div>
+                                            )}
+
+                                            <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f1a] via-[#0b0f1a]/40 to-transparent p-12 md:p-20 flex flex-col justify-end">
+                                                <div className="flex flex-wrap gap-4 mb-6">
+                                                    <span className="px-3 py-1 bg-orange-500 text-white text-[10px] font-black uppercase tracking-widest rounded-md">
+                                                        {readingArticle.publish_date ? new Date(readingArticle.publish_date).toLocaleDateString() : 'Active Narrative'}
+                                                    </span>
+                                                    {readingArticle.authors && readingArticle.authors.map((a: string) => (
+                                                        <span key={a} className="px-3 py-1 bg-white/10 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-widest rounded-md border border-white/5">
+                                                            {a}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                                <h2 className="text-4xl md:text-6xl font-black text-white leading-tight tracking-tighter mb-4 uppercase">{readingArticle.title}</h2>
                                             </div>
-                                        )}
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent p-8 md:p-12 flex flex-col justify-end">
-                                            <h2 className="text-3xl md:text-5xl font-extrabold text-white leading-tight uppercase tracking-tight mb-4">{readingArticle.title}</h2>
-                                            <div className="flex flex-wrap items-center text-gray-200 text-sm font-bold uppercase tracking-widest gap-6">
-                                                <span className="bg-white/20 px-3 py-1 rounded-md backdrop-blur-md">{readingArticle.publish_date ? new Date(readingArticle.publish_date).toLocaleDateString() : 'Recent'}</span>
-                                                {readingArticle.authors && readingArticle.authors.length > 0 && (
-                                                    <span className="bg-white/20 px-3 py-1 rounded-md backdrop-blur-md">By {readingArticle.authors.join(', ')}</span>
-                                                )}
+                                        </div>
+
+                                        {/* Article Content */}
+                                        <div className="p-12 md:p-20 max-w-4xl mx-auto">
+                                            <div className="space-y-10">
+                                                {readingArticle.text.split('\n\n').map((paragraph: string, i: number) => (
+                                                    <p key={i} className="text-xl leading-relaxed text-slate-300 font-medium selection:bg-orange-500/30">
+                                                        {paragraph}
+                                                    </p>
+                                                ))}
+                                            </div>
+
+                                            <div className="mt-16 pt-16 border-t border-white/5 flex items-center justify-center">
+                                                <p className="text-slate-500 text-sm font-bold uppercase tracking-widest">End of Intelligence Report</p>
                                             </div>
                                         </div>
                                     </div>
-
-                                    {/* Article Body */}
-                                    <div className="p-8 md:p-16 max-w-4xl mx-auto">
-                                        {readingArticle.text.split('\n\n').map((paragraph: string, i: number) => (
-                                            <p key={i} className="mb-10 text-xl leading-relaxed text-gray-700 dark:text-gray-300 font-medium font-serif first-letter:text-5xl first-letter:font-bold first-letter:mr-3 first-letter:float-left first-letter:text-orange-600">
-                                                {paragraph}
-                                            </p>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                )}
+                                )}
+                            </motion.div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </div>
+
+            <style jsx global>{`
+                .custom-scrollbar::-webkit-scrollbar {
+                    width: 6px;
+                }
+                .custom-scrollbar::-webkit-scrollbar-track {
+                    background: transparent;
+                }
+                .custom-scrollbar::-webkit-scrollbar-thumb {
+                    background: rgba(255, 255, 255, 0.1);
+                    border-radius: 10px;
+                }
+                .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+                    background: rgba(255, 255, 255, 0.2);
+                }
+            `}</style>
         </Layout>
     );
 };

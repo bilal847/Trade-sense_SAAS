@@ -39,6 +39,7 @@ export interface Challenge {
   total_max_loss: number;
   profit_target: number;
   max_duration_days?: number;
+  max_trade_quantity?: number;
   is_active: boolean;
   rules_json?: any;
   created_at: string;
@@ -49,6 +50,7 @@ export interface UserChallenge {
   id: number;
   user_id: number;
   challenge_id: number;
+  challenge?: Challenge; // Nested challenge object
   status: string; // 'IN_PROGRESS', 'PASSED', 'FAILED'
   start_balance: number;
   start_time: string;
@@ -66,6 +68,7 @@ export interface UserChallenge {
   daily_drawdown?: number;
   total_drawdown?: number;
   profit_percentage?: number;
+  violated_rules?: string[]; // Array of strings describing failure reasons
 }
 
 // Position types

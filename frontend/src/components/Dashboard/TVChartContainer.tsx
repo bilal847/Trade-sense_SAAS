@@ -1,12 +1,14 @@
 import React, { useEffect, useRef } from 'react';
-import { OHLCV } from '@/types';
-import { createChart, ColorType, IChartApi, CandlestickSeries, Time } from 'lightweight-charts';
+import { Trade, OHLCV, Quote } from '@/types';
+import { createChart, ColorType, IChartApi, CandlestickSeries, Time, SeriesMarker } from 'lightweight-charts';
 import { useTheme } from '@/hooks/useTheme';
 
 interface TVChartContainerProps {
   symbol: string;
   data: OHLCV[];
+  trades: Trade[];
   timeframe: string;
+  latestQuote?: Quote | null;
   isLoading?: boolean;
   isError?: boolean;
 }
@@ -14,13 +16,16 @@ interface TVChartContainerProps {
 const TVChartContainer: React.FC<TVChartContainerProps> = ({
   symbol,
   data,
+  trades,
   timeframe,
+  latestQuote = null,
   isLoading = false,
   isError = false
 }) => {
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRef = useRef<any>(null);
+  const lastBarRef = useRef<any>(null);
   const { theme } = useTheme();
 
   // Initialize Chart
@@ -118,14 +123,62 @@ const TVChartContainer: React.FC<TVChartContainerProps> = ({
 
     if (sortedData.length > 0) {
       seriesRef.current.setData(sortedData);
+      lastBarRef.current = sortedData[sortedData.length - 1];
       // Only fit content on initial load or if explicitly requested (optional logic)
       if (!isLoading) {
         chartRef.current?.timeScale().fitContent();
       }
     } else {
       seriesRef.current.setData([]);
+      lastBarRef.current = null;
     }
   }, [sortedData, isLoading]);
+
+  // Real-Time Price Update (Jitter Sync)
+  useEffect(() => {
+    const series = seriesRef.current;
+    if (!series || !latestQuote) return;
+
+    // Ensure we have the base bar to update
+    const baseBar = lastBarRef.current || (sortedData.length > 0 ? sortedData[sortedData.length - 1] : null);
+    if (!baseBar) return;
+
+    // Use the last bar's time for jitter updates to keep it in the same candle
+    // We only want to update the "tip" of the existing last candle
+    const updatedBar = {
+      time: baseBar.time,
+      open: baseBar.open,
+      high: Math.max(baseBar.high, latestQuote.last),
+      low: Math.min(baseBar.low, latestQuote.last),
+      close: latestQuote.last
+    };
+
+    series.update(updatedBar);
+    lastBarRef.current = updatedBar; // IMPORTANT: Persist the new high/low
+  }, [latestQuote, sortedData]);
+
+  // Update Markers (Trades)
+  useEffect(() => {
+    if (!seriesRef.current || !data || data.length === 0) return;
+
+    const markers: SeriesMarker<Time>[] = trades.map(trade => {
+      // Find the closest timestamp in our data to anchor the marker
+      const tradeTime = new Date(trade.created_at).getTime();
+      const markerTime = (Math.floor(tradeTime / 1000)) as Time;
+
+      return {
+        time: markerTime,
+        position: trade.side === 'BUY' ? 'belowBar' : 'aboveBar',
+        color: trade.side === 'BUY' ? '#22c55e' : '#ef4444',
+        shape: trade.side === 'BUY' ? 'arrowUp' : 'arrowDown',
+        text: `${trade.side} ${trade.qty}`,
+      };
+    });
+
+    if (seriesRef.current && typeof seriesRef.current.setMarkers === 'function') {
+      seriesRef.current.setMarkers(markers);
+    }
+  }, [trades, data]);
 
   return (
     <div className="relative w-full h-full min-h-[400px] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden transition-colors duration-200">

@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
+import { motion } from 'framer-motion';
+import { Activity, ShieldCheck } from 'lucide-react';
 import Layout from '@/components/Common/Layout';
 import { UserChallenge, Instrument, Quote, OHLCV, Signal } from '@/types';
 import { challengeAPI, marketAPI } from '@/services/api';
 import TradingDashboard from '@/components/Dashboard/TradingDashboard';
 import { useTranslation } from '@/hooks/useTranslation';
+
+const DASHBOARD_USER = { first_name: 'Bilal', email: 'bilaldebbar002@gmail.com' };
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -20,31 +24,31 @@ export default function Dashboard() {
     const fetchActiveChallenge = async () => {
       try {
         setIsLoading(true);
-        // Mock challenge for demo
-        const mockChallenge: UserChallenge = {
-          id: 1,
-          user_id: 1,
-          challenge_id: 1,
-          status: 'IN_PROGRESS',
-          start_balance: 10000,
-          start_time: new Date().toISOString(),
-          daily_start_equity: 10000,
-          current_equity: 10050.25,
-          max_equity: 10100,
-          min_equity: 9950,
-          min_equity_all_time: 9950,
-          min_equity_today: 9980,
-          daily_drawdown: 0.005,
-          total_drawdown: 0.007,
-          profit_percentage: 0.005,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        };
+        // Fetch real challenges
+        const response = await challengeAPI.getMyChallenges();
+        console.log('API Response:', response); // DEBUG
 
-        setUserChallenge(mockChallenge);
-        setActiveChallenge(mockChallenge);
+        const activeChallenges = response.data.active_challenges;
+        const allChallenges = response.data.all_challenges;
+        console.log('Active:', activeChallenges, 'All:', allChallenges); // DEBUG
+
+        if (activeChallenges && activeChallenges.length > 0) {
+          const challenge = activeChallenges[0];
+          setUserChallenge(challenge);
+          setActiveChallenge(challenge);
+        } else if (allChallenges && allChallenges.length > 0) {
+          // If no active but has recent challenges, show the most recent one
+          // (it might be FAILED, which we want to show the overlay for)
+          const challenge = allChallenges[0];
+          setUserChallenge(challenge);
+          setActiveChallenge(challenge);
+        } else {
+          setUserChallenge(null);
+          setActiveChallenge(null);
+        }
         setIsLoading(false);
       } catch (err) {
+        console.error('Error fetching challenges:', err); // DEBUG
         setError(t('error'));
         setIsLoading(false);
       }
@@ -89,72 +93,101 @@ export default function Dashboard() {
       </Head>
 
       <main className="container mx-auto px-4 py-6">
-        <div className="mb-8 text-center md:text-left border-b border-gray-100 dark:border-gray-800 pb-6">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{t('dashboard_title')}</h1>
-          <p className="text-gray-500 dark:text-gray-400 font-medium">Real-time trading with multi-asset support</p>
+        <div className="mb-8 text-center md:text-left pb-6 relative">
+          {/* Gradient background */}
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 dark:from-blue-900/20 dark:to-purple-900/20 rounded-2xl -z-10"></div>
+
+          <div className="relative p-6">
+            <h1 className="text-4xl font-black bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent mb-2">{
+              t('dashboard_title')}
+            </h1>
+            <p className="text-gray-600 dark:text-gray-300 font-semibold">Real-time trading with multi-asset support</p>
+          </div>
         </div>
 
         {activeChallenge ? (
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-xl border border-gray-200 dark:border-gray-700">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-6 bg-gray-50 dark:bg-gray-900/50 p-6 rounded-2xl border border-gray-100 dark:border-gray-800">
-              <div className="space-y-4">
-                <div className="flex items-center space-x-3">
-                  <span className={`px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase shadow-sm border ${activeChallenge.status === 'IN_PROGRESS'
-                    ? 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800'
-                    : 'bg-green-100 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800'
+          <div className="space-y-6">
+            {/* Premium Institutional Header */}
+            <div className="bg-white/5 backdrop-blur-3xl rounded-[2.5rem] border border-white/5 p-10 flex flex-col md:flex-row justify-between items-center gap-10 shadow-2xl relative overflow-hidden group">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/5 rounded-full blur-[80px] -mr-32 -mt-32"></div>
+
+              <div className="space-y-6 relative z-10 w-full">
+                <div className="flex items-center space-x-4">
+                  <span className={`px-4 py-1.5 rounded-full text-[10px] font-black tracking-[0.2em] uppercase border-2 transition-all duration-300 ${activeChallenge.status === 'IN_PROGRESS'
+                    ? 'bg-blue-600/10 border-blue-500/30 text-blue-400'
+                    : 'bg-green-600/10 border-green-500/30 text-green-400'
                     }`}>
-                    {activeChallenge.status}
+                    {activeChallenge.status} ARCHITECTURE
                   </span>
-                  <h2 className="text-xl font-bold text-gray-900 dark:text-white uppercase tracking-tight">Challenge Account</h2>
+                  <div className="h-px flex-1 bg-white/5"></div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
-                  <div className="space-y-1">
-                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">{t('dashboard_balance')}</p>
-                    <p className="text-xl font-mono font-bold text-gray-900 dark:text-white">${activeChallenge.start_balance.toLocaleString()}</p>
+                <div className="flex flex-col md:flex-row justify-between items-end gap-12">
+                  <div className="flex items-center space-x-6">
+                    <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-blue-400 shadow-xl">
+                      <Activity className="w-8 h-8" />
+                    </div>
+                    <div>
+                      <h2 className="text-4xl font-black text-white uppercase italic tracking-tighter mb-1">
+                        {activeChallenge.challenge?.name || "QUANT ACCOUNT"}
+                      </h2>
+                      <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em]">ID: <span className="text-blue-400">#TSQ-{activeChallenge.id}</span> • {new Date(activeChallenge.start_time).toLocaleDateString()}</p>
+                    </div>
                   </div>
-                  <div className="space-y-1">
-                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">{t('dashboard_equity')}</p>
-                    <p className="text-xl font-mono font-bold text-gray-900 dark:text-white">${activeChallenge.current_equity.toLocaleString()}</p>
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">{t('dashboard_profit')}</p>
-                    <p className={`text-xl font-mono font-bold ${(activeChallenge.current_equity - activeChallenge.start_balance) >= 0
-                      ? 'text-green-600 dark:text-green-400'
-                      : 'text-red-600 dark:text-red-400'
-                      }`}>
-                      ${(activeChallenge.current_equity - activeChallenge.start_balance).toLocaleString()}
-                    </p>
+
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-12 w-full md:w-auto">
+                    <div className="flex flex-col">
+                      <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-1">Allocation</span>
+                      <span className="text-2xl font-mono font-black text-white">${activeChallenge.start_balance.toLocaleString()}</span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-1">Live Equity</span>
+                      <span className="text-2xl font-mono font-black text-blue-400">${activeChallenge.current_equity.toLocaleString()}</span>
+                    </div>
+                    <div className="flex flex-col col-span-2 sm:col-span-1 border-t sm:border-t-0 sm:border-l border-white/5 pt-4 sm:pt-0 sm:pl-12">
+                      <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-1">Alpha Yield</span>
+                      <span className={`text-2xl font-mono font-black ${(activeChallenge.current_equity - activeChallenge.start_balance) >= 0
+                        ? 'text-green-500'
+                        : 'text-red-500'
+                        }`}>
+                        {(activeChallenge.current_equity - activeChallenge.start_balance) >= 0 ? '+' : ''}${(activeChallenge.current_equity - activeChallenge.start_balance).toLocaleString()}
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-
-              <div className="text-left md:text-right space-y-2 border-l border-gray-200 dark:border-gray-700 pl-6 hidden md:block">
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Account Details</p>
-                <p className="text-sm font-bold text-gray-700 dark:text-gray-300">ID: <span className="text-blue-600 dark:text-blue-400">#TSQ-{activeChallenge.id}</span></p>
-                <p className="text-xs text-gray-500 font-medium">
-                  {t('view')} {new Date(activeChallenge.start_time).toLocaleDateString()}
-                </p>
               </div>
             </div>
 
-            <TradingDashboard userChallenge={activeChallenge} />
+            <TradingDashboard
+              userChallenge={activeChallenge}
+              user={DASHBOARD_USER}
+            />
           </div>
         ) : (
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-12 text-center border border-gray-200 dark:border-gray-700 shadow-xl max-w-2xl mx-auto">
-            <div className="w-20 h-20 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center mx-auto mb-6 text-blue-600 dark:text-blue-400">
-              <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
-            </div>
-            <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">No Active Challenge</h2>
-            <p className="text-gray-500 dark:text-gray-400 mb-8 font-medium">
-              You don't have an active trading challenge. Start a challenge to begin trading with real-time data.
-            </p>
-            <button
-              className="px-8 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-bold transition-all shadow-lg shadow-blue-500/30"
-              onClick={() => router.push('/challenges')}
+          <div className="min-h-[60vh] flex flex-col items-center justify-center">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[3rem] p-16 text-center shadow-2xl max-w-2xl relative overflow-hidden group"
             >
-              Browse Challenges
-            </button>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-[40px] -mr-16 -mt-16 group-hover:bg-blue-500/20 transition-all"></div>
+
+              <div className="w-24 h-24 bg-blue-600/10 border border-blue-500/20 rounded-[2rem] flex items-center justify-center mx-auto mb-8 text-blue-500 shadow-xl group-hover:scale-110 transition-transform">
+                <ShieldCheck className="w-12 h-12" />
+              </div>
+
+              <h2 className="text-4xl font-black mb-4 text-white uppercase italic tracking-tighter">Repository Inactive</h2>
+              <p className="text-slate-400 mb-10 font-medium text-lg leading-relaxed">
+                No active institutional accounts detected. Initiate an evaluation architecture to begin quantitative execution.
+              </p>
+
+              <button
+                className="px-10 py-4 bg-blue-600 text-white rounded-2xl hover:bg-blue-500 font-black uppercase tracking-widest transition-all shadow-xl shadow-blue-500/20 transform hover:scale-105 active:scale-95"
+                onClick={() => router.push('/challenges')}
+              >
+                Initiate Evaluation
+              </button>
+            </motion.div>
           </div>
         )}
       </main>

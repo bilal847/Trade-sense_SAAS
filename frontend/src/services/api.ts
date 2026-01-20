@@ -56,8 +56,11 @@ export const marketAPI = {
   getQuote: (instrument_id: number) =>
     apiClient.get(`/market/quote?instrument_id=${instrument_id}`),
 
-  getOHLCV: (instrument_id: number, timeframe: string = '1h', limit: number = 100) =>
+  getOHLCV: (instrument_id: number, timeframe: string = '1h', limit: number = 1000) =>
     apiClient.get(`/market/ohlcv?instrument_id=${instrument_id}&timeframe=${timeframe}&limit=${limit}`),
+
+  getQuotes: (instrument_ids: number[]) =>
+    apiClient.post('/market/quotes', { instrument_ids }),
 
   getMarketHealth: () => apiClient.get('/market/health'),
 };
@@ -65,6 +68,8 @@ export const marketAPI = {
 // Challenge API
 export const challengeAPI = {
   getChallenges: () => apiClient.get('/challenges'),
+
+  getMyChallenges: () => apiClient.get('/challenges/my'),
 
   startChallenge: (challenge_id: number) =>
     apiClient.post('/challenges/start', { challenge_id }),
@@ -92,9 +97,6 @@ export const challengeAPI = {
 
   evaluateChallenge: (user_challenge_id: number) =>
     apiClient.post(`/challenges/${user_challenge_id}/evaluate`),
-
-  forceFail: (user_challenge_id: number) =>
-    apiClient.post(`/challenges/${user_challenge_id}/force_fail`),
 };
 
 // Leaderboard API
@@ -111,11 +113,11 @@ export const leaderboardAPI = {
 
 // Payment API
 export const paymentAPI = {
-  mockCheckout: (plan: 'BASIC' | 'PREMIUM' | 'PRO', amount: number, currency: string = 'USD') =>
+  mockCheckout: (plan: 'BASIC' | 'PREMIUM' | 'PRO' | 'STUDENT' | 'ELITE' | 'MASTER', amount: number, currency: string = 'USD') =>
     apiClient.post('/payments/mock/checkout', { plan, amount, currency }),
 
-  mockConfirm: (payment_id: string) =>
-    apiClient.post('/payments/mock/confirm', { payment_id }),
+  mockConfirm: (payment_id: string | number) =>
+    apiClient.post(`/payments/mock/confirm/${payment_id}`),
   processPayment: (data: any) => apiClient.post('/payment/process', data),
 };
 
