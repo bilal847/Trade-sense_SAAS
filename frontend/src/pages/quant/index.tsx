@@ -66,8 +66,10 @@ const AIQuantAssistant: React.FC = () => {
         try {
             const res = await featuresAPI.getEnsembleAnalysis(assetId);
             setAnalysisResults({ ...analysisResults, [assetId]: res.data.analysis });
-        } catch (e) {
-            setAnalysisResults({ ...analysisResults, [assetId]: { error: t('error') } });
+        } catch (e: any) {
+            console.error('Ensemble analysis failed:', e);
+            const errorMessage = e.response?.data?.message || t('error');
+            setAnalysisResults({ ...analysisResults, [assetId]: { error: errorMessage } });
         } finally {
             setLoading({ ...loading, [assetId]: false });
         }

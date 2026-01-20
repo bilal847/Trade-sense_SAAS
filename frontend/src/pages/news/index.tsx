@@ -78,7 +78,7 @@ const NewsHub: React.FC = () => {
     });
 
     // Get unique impacts for filter
-    const uniqueImpacts = ['All', ...Array.from(new Set(newsData.map(n => n.impact).filter(Boolean)))];
+    const uniqueImpacts = ['All', 'Global', ...Array.from(new Set(newsData.map(n => n.impact).filter(i => i && i !== 'Global')))];
 
     const containerVariants = {
         hidden: { opacity: 0 },
