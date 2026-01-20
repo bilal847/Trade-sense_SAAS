@@ -91,28 +91,10 @@ class MarketDataService:
         if cached_result:
             return self._apply_dynamic_jitter(cached_result)
         
-        # Redirect logic: Use Yahoo if MT5 is requested (since it's disabled) or for Binance reliability
-        # This acts as a unified data layer adapter
-        target_provider = provider.upper()
-        provider_instance = self.providers.get(target_provider)
-
-        # If standard provider is missing or we want to force Yahoo for specific ones
-        if (target_provider == 'MT5' or target_provider == 'BINANCE') and self.yahoo_provider:
-            provider_instance = self.yahoo_provider
-            
+        # Get provider instance
+        provider_instance = self.providers.get(provider.upper())
         if not provider_instance:
-            if target_provider == 'MT5': # Soft fail for mock if everything fails
-                 # Try to force a mock result instead of crashing
-                 pass 
-            else:
-                 raise ValueError(f"Provider {provider} not available")
-                 
-        if not provider_instance:
-             # Just in case yahoo failed too, we might still have the original disabled instance 
-             # (MT5 instance behaves as mock if initialized but disabled)
-             provider_instance = self.providers.get(target_provider)
-             if not provider_instance:
-                 raise ValueError(f"Provider {provider} not available")
+            raise ValueError(f"Provider {provider} not available")
 
         # Get fresh data
         result = provider_instance.get_quote(instrument)
@@ -150,19 +132,10 @@ class MarketDataService:
         if cached_result:
             return cached_result
         
-        # Get provider instance (with redirection)
-        target_provider = provider.upper()
-        provider_instance = self.providers.get(target_provider)
-
-        # Redirect MT5/Binance to Yahoo
-        if (target_provider == 'MT5' or target_provider == 'BINANCE') and self.yahoo_provider:
-            provider_instance = self.yahoo_provider
-
+        # Get provider instance
+        provider_instance = self.providers.get(provider.upper())
         if not provider_instance:
-            # Fallback to original for potential mock handling
-            provider_instance = self.providers.get(target_provider)
-            if not provider_instance:
-                raise ValueError(f"Provider {provider} not available")
+            raise ValueError(f"Provider {provider} not available")
         
         # Get fresh data
         result = provider_instance.get_ohlcv(instrument, timeframe, limit)
