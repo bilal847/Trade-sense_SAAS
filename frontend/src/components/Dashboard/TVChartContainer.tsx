@@ -153,6 +153,16 @@ const TVChartContainer: React.FC<TVChartContainerProps> = ({
       close: latestQuote.last
     };
 
+    // DEBUG: Log anomaly
+    if (Math.abs(updatedBar.close - updatedBar.open) / updatedBar.open > 0.2) {
+      console.warn('[TVChart] Large price jump detected! Ignoring update', {
+        prev: baseBar,
+        new: latestQuote,
+        updated: updatedBar
+      });
+      return; // BLOCK bad update
+    }
+
     series.update(updatedBar);
     lastBarRef.current = updatedBar; // IMPORTANT: Persist the new high/low
   }, [latestQuote, sortedData]);

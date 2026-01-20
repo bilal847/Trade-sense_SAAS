@@ -11,14 +11,15 @@ const TVChartContainer = dynamic(() => import('./TVChartContainer'), {
 
 import { useTranslation } from '@/hooks/useTranslation';
 
-// Fallback Mock Data for demo stability
+// Fallback Mock Data for demo stability - Updated to 2026 Prices
 const MOCK_INSTRUMENTS = [
   { id: 1, symbol: 'EURUSD', display_symbol: 'EUR/USD', asset_class: 'FX', last_price: 1.0543 },
   { id: 2, symbol: 'GBPUSD', display_symbol: 'GBP/USD', asset_class: 'FX', last_price: 1.2291 },
   { id: 3, symbol: 'USDJPY', display_symbol: 'USD/JPY', asset_class: 'FX', last_price: 149.23 },
-  { id: 4, symbol: 'BTCUSDT', display_symbol: 'BTC/USDT', asset_class: 'CRYPTO', last_price: 43250.00 },
-  { id: 5, symbol: 'ETHUSDT', display_symbol: 'ETH/USDT', asset_class: 'CRYPTO', last_price: 2280.50 },
-  { id: 6, symbol: 'IAM', display_symbol: 'IAM (Maroc)', asset_class: 'STOCKS', last_price: 98.50 },
+  { id: 4, symbol: 'BTCUSDT', display_symbol: 'BTC/USDT', asset_class: 'CRYPTO', last_price: 90918.00 },
+  { id: 5, symbol: 'ETHUSDT', display_symbol: 'ETH/USDT', asset_class: 'CRYPTO', last_price: 5200.50 },
+  { id: 6, symbol: 'IAM', display_symbol: 'IAM (Maroc)', asset_class: 'STOCKS', last_price: 93.50 },
+  { id: 7, symbol: 'XAUUSD', display_symbol: 'Gold', asset_class: 'COMMODITIES', last_price: 4713.00 },
 ];
 
 interface EventLog {
@@ -33,7 +34,10 @@ interface EventLog {
 // Helper: Generate Mock Data for Smart Fallback
 const generateMockOHLCV = (instrumentId: number, count: number): OHLCV[] => {
   const data: OHLCV[] = [];
-  let basePrice = instrumentId === 1 ? 1.05 : instrumentId === 4 ? 43000 : 100;
+  // Find correct base price from MOCK_INSTRUMENTS to ensure alignment
+  const mockRef = MOCK_INSTRUMENTS.find(m => m.id === instrumentId);
+  let basePrice = mockRef ? mockRef.last_price : 100;
+
   // Start from 'count' hours ago
   let currentTime = Date.now() - count * 3600 * 1000;
 
@@ -140,7 +144,7 @@ const TradingDashboard: React.FC<{ userChallenge: UserChallenge; user: any }> = 
     if (selectedInstrument) {
       setIsChartLoading(true);
       setIsChartError(false);
-      setOhlcvData([]); // Clear previous data to prevent chart artifacts and scale issues
+      // setOhlcvData([]); // REMOVED: Don't clear previous data to prevent flash/reset
       try {
         const response = await marketAPI.getOHLCV(selectedInstrument.id, timeframe, 1000);
         if (response.data && response.data.ohlcv && response.data.ohlcv.length > 0) {
@@ -189,7 +193,17 @@ const TradingDashboard: React.FC<{ userChallenge: UserChallenge; user: any }> = 
       console.warn('Error fetching batch quotes, using fallbacks');
       const newQuotes: Record<number, Quote> = {};
       instruments.forEach(inst => {
-        const fallbackPrice = (inst as any).last_price || 100;
+        // Find best fallback price from MOCK_INSTRUMENTS
+        const mockRef = MOCK_INSTRUMENTS.find(m => m.symbol === inst.display_symbol || m.symbol === inst.provider_symbol);
+        let fallbackPrice = mockRef ? mockRef.last_price : 100;
+
+        // Safety heuristics if map missing
+        if (!mockRef) {
+          if (inst.asset_class === 'CRYPTO' && inst.display_symbol.includes('BTC')) fallbackPrice = 90000;
+          else if (inst.asset_class === 'CRYPTO' && inst.display_symbol.includes('ETH')) fallbackPrice = 5000;
+          else if (inst.asset_class === 'FX') fallbackPrice = 1.05;
+        }
+
         newQuotes[inst.id] = {
           bid: fallbackPrice,
           ask: fallbackPrice * 1.0001,
@@ -219,7 +233,10 @@ const TradingDashboard: React.FC<{ userChallenge: UserChallenge; user: any }> = 
         setQuotesMap(prev => ({ ...prev, [selectedInstrument.id]: q }));
         return q;
       } catch (error) {
-        const fallbackPrice = (selectedInstrument as any).last_price || 100;
+        // Improved fallback specific to instrument
+        const mockRef = MOCK_INSTRUMENTS.find(m => m.symbol === selectedInstrument.display_symbol);
+        const fallbackPrice = mockRef ? mockRef.last_price : ((selectedInstrument as any).last_price || 100);
+
         const q = {
           bid: fallbackPrice,
           ask: fallbackPrice * 1.0001,
@@ -806,94 +823,10 @@ const TradingDashboard: React.FC<{ userChallenge: UserChallenge; user: any }> = 
 
       {/* Right Panel - Live Journal Only */}
       <div className="lg:col-span-2 space-y-4">
-        {/* Trading Journal / Event Log */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700 shadow-sm h-[600px] overflow-hidden flex flex-col">
-          <h3 className="text-lg font-semibold mb-2 text-orange-400">Live Journal</h3>
-          <div className="overflow-y-auto flex-1 text-xs space-y-2 pr-1">
-            {events.map(event => (
-              <div key={event.id} className="bg-gray-900/50 p-2 rounded border-l-2 border-gray-600">
-                <div className="flex justify-between text-gray-500 mb-1">
-                  <span>{new Date(event.created_at).toLocaleTimeString()}</span>
-                  <span className="uppercase">{event.type.replace('_', ' ')}</span>
-                </div>
-                <div className="text-gray-300">
-                  {event.type === 'trade_executed' && (
-                    <span>{event.payload_json.side} {event.payload_json.qty} {event.payload_json.symbol} @ {event.payload_json.price}</span>
-                  )}
-                  {event.type === 'signal_change' && (
-                    <span>{event.payload_json.symbol}: {event.payload_json.direction} ({Math.round(event.payload_json.confidence * 100)}%)</span>
-                  )}
-                  {event.type === 'quote_update' && (
-                    <span>{event.payload_json.symbol}: {event.payload_json.last} ({event.payload_json.change})</span>
-                  )}
-                  {event.type === 'risk_evaluation' && (
-                    <span>DD: {(event.payload_json.daily_drawdown * 100).toFixed(2)}% | Total: {(event.payload_json.total_drawdown * 100).toFixed(2)}%</span>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        {/* We keep this clean as requested */}
       </div>
-      {/* Challenge Failed Overlay */}
-      {currentStatus === 'FAILED' && (
-        <div className="fixed inset-0 bg-black/90 z-[60] flex items-center justify-center p-4 backdrop-blur-sm">
-          <div className="bg-gray-900 border-2 border-red-600 rounded-2xl p-8 max-w-lg w-full text-center shadow-2xl relative overflow-hidden">
-            {/* Background red pulse */}
-            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-red-500 via-orange-500 to-red-500 animate-pulse"></div>
-
-            <div className="w-24 h-24 bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-6 border-4 border-red-600 animate-bounce">
-              <svg className="w-12 h-12 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-            </div>
-
-            <h2 className="text-3xl font-black text-white mb-2 uppercase tracking-widest">Evaluation Concluded</h2>
-            <p className="text-red-400 font-bold text-lg mb-4">Risk Management Parameters Exceeded</p>
-
-            {/* Professional motivational message */}
-            <div className="bg-gradient-to-r from-blue-900/30 to-purple-900/30 border border-blue-500/30 rounded-lg p-6 mb-6">
-              <p className="text-blue-200 font-semibold text-base leading-relaxed">
-                We encourage you to refine your strategy and consider initiating a new challenge to continue your journey.
-              </p>
-            </div>
-
-            <div className="bg-black/50 rounded-lg p-6 mb-8 text-left border border-red-900/50">
-              <h4 className="text-gray-400 text-xs uppercase tracking-wider mb-3">Violation Summary:</h4>
-              <ul className="space-y-2">
-                {violatedRules && violatedRules.length > 0 ? (
-                  violatedRules.map((rule: string, i: number) => (
-                    <li key={i} className="flex items-start text-red-300">
-                      <span className="mr-2 text-red-500">✖</span>
-                      {rule}
-                    </li>
-                  ))
-                ) : (
-                  <li className="flex items-start text-red-300">
-                    <span className="mr-2 text-red-500">✖</span>
-                    Risk threshold breach detected
-                  </li>
-                )}
-              </ul>
-            </div>
-
-            <div className="space-y-3">
-              <button
-                onClick={() => window.location.href = '/challenges'}
-                className="w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-lg font-bold transition-all shadow-lg shadow-blue-900/40 uppercase tracking-wider"
-              >
-                Start New Challenge
-              </button>
-              <button
-                onClick={() => window.location.href = '/leaderboard'}
-                className="w-full py-3 bg-transparent border-2 border-gray-700 hover:border-gray-500 text-gray-300 hover:text-white rounded-lg font-semibold transition-all"
-              >
-                View Leaderboard
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
-};
+}
 
 export default TradingDashboard;
