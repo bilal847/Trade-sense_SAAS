@@ -63,7 +63,7 @@ const generateMockOHLCV = (instrumentId: number, count: number): OHLCV[] => {
 };
 
 const TradingDashboard: React.FC<{ userChallenge: UserChallenge; user: any }> = ({ userChallenge, user }) => {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
 
   // DEBUG: Inspect challenge rules
   useEffect(() => {
@@ -561,7 +561,7 @@ const TradingDashboard: React.FC<{ userChallenge: UserChallenge; user: any }> = 
                   {group === 'FX' ? 'Forex (FX)' :
                     group === 'CRYPTO' ? 'Crypto' :
                       group === 'COMMODITIES' ? 'Commodities' :
-                        group === 'STOCKS' ? (t('cate_coding') === 'Codage' ? 'Actions (CSE)' : 'Stocks (CSE)') :
+                        group === 'STOCKS' ? (locale === 'fr' ? 'Actions (CSE)' : 'Stocks (CSE)') :
                           group}
                 </span>
                 <span className="text-[10px] bg-blue-500/20 text-blue-400 px-1.5 py-0.5 rounded-full font-bold">
@@ -812,7 +812,7 @@ const TradingDashboard: React.FC<{ userChallenge: UserChallenge; user: any }> = 
                   <th className="pb-2">Price</th>
                 </tr>
               </thead>
-              <tbody className="text-gray-300">
+              <tbody className="text-gray-700 dark:text-gray-300">
                 {events.filter(e => e.type === 'trade_executed').map(event => (
                   <tr key={event.id} className="border-b border-gray-800/50">
                     <td className="py-2">{new Date(event.created_at).toLocaleTimeString()}</td>

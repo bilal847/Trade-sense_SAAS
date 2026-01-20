@@ -2,6 +2,7 @@ import '../styles/globals.css';
 import type { AppProps } from 'next/app';
 import Layout from '@/components/Common/Layout';
 import { ThemeProvider } from '@/context/ThemeContext';
+import { TranslationProvider } from '@/context/TranslationContext';
 import { authAPI } from '@/services/api';
 import React, { useState, useEffect } from 'react';
 
@@ -36,9 +37,11 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <ThemeProvider>
-      <Layout user={user}>
-        <Component {...pageProps} />
-      </Layout>
+      <TranslationProvider>
+        <Layout user={user}>
+          <Component {...pageProps} />
+        </Layout>
+      </TranslationProvider>
     </ThemeProvider>
   );
 }

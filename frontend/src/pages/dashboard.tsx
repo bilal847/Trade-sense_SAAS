@@ -108,47 +108,47 @@ export default function Dashboard() {
         {activeChallenge ? (
           <div className="space-y-6">
             {/* Premium Institutional Header */}
-            <div className="bg-white/5 backdrop-blur-3xl rounded-[2.5rem] border border-white/5 p-10 flex flex-col md:flex-row justify-between items-center gap-10 shadow-2xl relative overflow-hidden group">
+            <div className="bg-white dark:bg-white/5 backdrop-blur-3xl rounded-[2.5rem] border border-gray-200 dark:border-white/5 p-10 flex flex-col md:flex-row justify-between items-center gap-10 shadow-2xl relative overflow-hidden group">
               <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/5 rounded-full blur-[80px] -mr-32 -mt-32"></div>
 
               <div className="space-y-6 relative z-10 w-full">
                 <div className="flex items-center space-x-4">
                   <span className={`px-4 py-1.5 rounded-full text-[10px] font-black tracking-[0.2em] uppercase border-2 transition-all duration-300 ${activeChallenge.status === 'IN_PROGRESS'
-                    ? 'bg-blue-600/10 border-blue-500/30 text-blue-400'
-                    : 'bg-green-600/10 border-green-500/30 text-green-400'
+                    ? 'bg-blue-600/10 border-blue-500/30 text-blue-600 dark:text-blue-400'
+                    : 'bg-green-600/10 border-green-500/30 text-green-600 dark:text-green-400'
                     }`}>
                     {activeChallenge.status} ARCHITECTURE
                   </span>
-                  <div className="h-px flex-1 bg-white/5"></div>
+                  <div className="h-px flex-1 bg-gray-200 dark:bg-white/5"></div>
                 </div>
 
                 <div className="flex flex-col md:flex-row justify-between items-end gap-12">
                   <div className="flex items-center space-x-6">
-                    <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-blue-400 shadow-xl">
+                    <div className="w-16 h-16 rounded-2xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-xl">
                       <Activity className="w-8 h-8" />
                     </div>
                     <div>
-                      <h2 className="text-4xl font-black text-white uppercase italic tracking-tighter mb-1">
+                      <h2 className="text-4xl font-black text-gray-900 dark:text-white uppercase italic tracking-tighter mb-1">
                         {activeChallenge.challenge?.name || "QUANT ACCOUNT"}
                       </h2>
-                      <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em]">ID: <span className="text-blue-400">#TSQ-{activeChallenge.id}</span> • {new Date(activeChallenge.start_time).toLocaleDateString()}</p>
+                      <p className="text-[10px] font-bold text-gray-500 dark:text-slate-500 uppercase tracking-[0.2em]">ID: <span className="text-blue-600 dark:text-blue-400">#TSQ-{activeChallenge.id}</span> • {new Date(activeChallenge.start_time).toLocaleDateString()}</p>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-12 w-full md:w-auto">
                     <div className="flex flex-col">
-                      <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-1">Allocation</span>
-                      <span className="text-2xl font-mono font-black text-white">${activeChallenge.start_balance.toLocaleString()}</span>
+                      <span className="text-[10px] font-black text-gray-500 dark:text-slate-600 uppercase tracking-widest mb-1">Allocation</span>
+                      <span className="text-2xl font-mono font-black text-gray-900 dark:text-white">${activeChallenge.start_balance.toLocaleString()}</span>
                     </div>
                     <div className="flex flex-col">
-                      <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-1">Live Equity</span>
-                      <span className="text-2xl font-mono font-black text-blue-400">${activeChallenge.current_equity.toLocaleString()}</span>
+                      <span className="text-[10px] font-black text-gray-500 dark:text-slate-600 uppercase tracking-widest mb-1">Live Equity</span>
+                      <span className="text-2xl font-mono font-black text-blue-600 dark:text-blue-400">${activeChallenge.current_equity.toLocaleString()}</span>
                     </div>
-                    <div className="flex flex-col col-span-2 sm:col-span-1 border-t sm:border-t-0 sm:border-l border-white/5 pt-4 sm:pt-0 sm:pl-12">
-                      <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-1">Alpha Yield</span>
+                    <div className="flex flex-col col-span-2 sm:col-span-1 border-t sm:border-t-0 sm:border-l border-gray-200 dark:border-white/5 pt-4 sm:pt-0 sm:pl-12">
+                      <span className="text-[10px] font-black text-gray-500 dark:text-slate-600 uppercase tracking-widest mb-1">Alpha Yield</span>
                       <span className={`text-2xl font-mono font-black ${(activeChallenge.current_equity - activeChallenge.start_balance) >= 0
-                        ? 'text-green-500'
-                        : 'text-red-500'
+                        ? 'text-green-600 dark:text-green-500'
+                        : 'text-red-600 dark:text-red-500'
                         }`}>
                         {(activeChallenge.current_equity - activeChallenge.start_balance) >= 0 ? '+' : ''}${(activeChallenge.current_equity - activeChallenge.start_balance).toLocaleString()}
                       </span>
