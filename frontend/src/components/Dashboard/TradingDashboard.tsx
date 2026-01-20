@@ -455,12 +455,12 @@ const TradingDashboard: React.FC<{ userChallenge: UserChallenge; user: any }> = 
     setIsTradeLoading(true);
     setTradeError(null);
 
-    // Client-side Max Quantity Validation
-    if (userChallenge?.challenge?.max_trade_quantity && quantity > userChallenge.challenge.max_trade_quantity) {
-      setTradeError(`Maximum trade quantity is ${userChallenge.challenge.max_trade_quantity} units`);
-      setIsTradeLoading(false);
-      return;
-    }
+    // Client-side Max Quantity Validation REMOVED to allow backend failure logic to trigger
+    // if (userChallenge?.challenge?.max_trade_quantity && quantity > userChallenge.challenge.max_trade_quantity) {
+    //   setTradeError(`Maximum trade quantity is ${userChallenge.challenge.max_trade_quantity} units`);
+    //   setIsTradeLoading(false);
+    //   return;
+    // }
 
     try {
       await challengeAPI.executeTrade(userChallenge.id, selectedInstrument.id, side, quantity);
