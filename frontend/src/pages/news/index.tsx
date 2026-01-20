@@ -86,7 +86,7 @@ const NewsHub: React.FC = () => {
             opacity: 1,
             transition: { staggerChildren: 0.1 }
         }
-    };
+    } as const;
 
     const itemVariants = {
         hidden: { opacity: 0, y: 20 },
@@ -95,7 +95,7 @@ const NewsHub: React.FC = () => {
             y: 0,
             transition: { duration: 0.5 }
         }
-    };
+    } as const;
 
     const getAssetIcon = (asset: string): React.ReactNode => {
         switch (asset) {
@@ -272,8 +272,8 @@ const NewsHub: React.FC = () => {
                                             {/* Sentiment Indicator */}
                                             <div className="flex items-center space-x-4 mb-6">
                                                 <div className={`flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter ${item.sentiment === 'Bullish' ? 'text-emerald-400 bg-emerald-500/10' :
-                                                        item.sentiment === 'Bearish' ? 'text-rose-400 bg-rose-500/10' :
-                                                            'text-blue-400 bg-blue-500/10'
+                                                    item.sentiment === 'Bearish' ? 'text-rose-400 bg-rose-500/10' :
+                                                        'text-blue-400 bg-blue-500/10'
                                                     }`}>
                                                     {item.sentiment === 'Bullish' ? <TrendingUp className="w-3 h-3" /> :
                                                         item.sentiment === 'Bearish' ? <TrendingDown className="w-3 h-3" /> :
@@ -287,8 +287,8 @@ const NewsHub: React.FC = () => {
                                                         animate={{ width: item.sentiment === 'Neutral' ? '50%' : '85%' }}
                                                         transition={{ duration: 1, delay: idx * 0.1 }}
                                                         className={`h-full ${item.sentiment === 'Bullish' ? 'bg-emerald-500' :
-                                                                item.sentiment === 'Bearish' ? 'bg-rose-500' :
-                                                                    'bg-blue-500'
+                                                            item.sentiment === 'Bearish' ? 'bg-rose-500' :
+                                                                'bg-blue-500'
                                                             }`}
                                                     />
                                                 </div>

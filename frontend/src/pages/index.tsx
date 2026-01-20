@@ -32,7 +32,7 @@ export default function Home() {
         delayChildren: 0.3
       }
     }
-  };
+  } as const;
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -41,7 +41,7 @@ export default function Home() {
       y: 0,
       transition: { duration: 0.5, ease: 'easeOut' }
     }
-  };
+  } as const;
 
   const marketData = [
     { symbol: 'BTC/USDT', price: '45,231.50', change: '+1.25%', trend: 'up' },
