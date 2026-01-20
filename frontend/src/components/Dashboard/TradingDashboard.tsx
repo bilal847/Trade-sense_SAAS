@@ -494,11 +494,16 @@ const TradingDashboard: React.FC<{ userChallenge: UserChallenge; user: any }> = 
       await fetchQuote();
     } catch (error: any) {
       console.error('Error executing trade:', error);
-      const errorMessage = error.response?.data?.error || t('error');
+
+      // Extract error message safely
+      const backendError = error.response?.data?.error;
+      const errorMessage = backendError || t('error');
+
       setTradeError(errorMessage);
 
       // If the error indicates failure (common for quantity limit)
-      if (errorMessage.toLowerCase().includes('failed')) {
+      if (typeof errorMessage === 'string' && errorMessage.toLowerCase().includes('failed')) {
+        console.warn('Challenge FAILURE detected from backend:', errorMessage);
         setCurrentStatus('FAILED');
         const reason = errorMessage.replace('Challenge FAILED: ', '');
         setViolatedRules(prev => {

@@ -147,7 +147,7 @@ def execute_trade(user_challenge_id):
         
         instrument_id = data.get('instrument_id')
         side = data.get('side')
-        qty = data.get('qty')
+        qty = float(data.get('qty'))
         
         if not all([instrument_id, side, qty]):
             return jsonify({'error': 'instrument_id, side, and qty are required'}), 400
