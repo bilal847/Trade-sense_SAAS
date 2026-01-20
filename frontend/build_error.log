@@ -1,0 +1,70 @@
+
+> tradesense-quant-frontend@0.1.0 build
+> next build
+
+   Linting and checking validity of types ...
+   ▲ Next.js 14.0.0
+
+   Creating an optimized production build ...
+<w> [webpack.cache.PackFileCacheStrategy] Skipped not serializable cache item 'Compilation/modules|C:\Users\HP\Documents\Master\web dev\projects\Final project\frontend\node_modules\next\dist\build\webpack\loaders\css-loader\src\index.js??ruleSet[1].rules[7].oneOf[13].use[1]!C:\Users\HP\Documents\Master\web dev\projects\Final project\frontend\node_modules\next\dist\build\webpack\loaders\postcss-loader\src\index.js??ruleSet[1].rules[7].oneOf[13].use[2]!C:\Users\HP\Documents\Master\web dev\projects\Final project\frontend\src\styles\globals.css': No serializer registered for PostCSSSyntaxError
+<w> while serializing webpack/lib/cache/PackFileCacheStrategy.PackContentItems -> webpack/lib/NormalModule -> webpack/lib/ModuleBuildError -> PostCSSSyntaxError
+Failed to compile.
+
+./src/styles/globals.css:173:3
+Syntax error: C:\Users\HP\Documents\Master\web dev\projects\Final project\frontend\src\styles\globals.css The `shadow-[0_0_10px_rgba(16,` class does not exist. If `shadow-[0_0_10px_rgba(16,` is a custom class, make sure it is defined within a `@layer` directive.
+
+ [90m 171 | [39m
+ [90m 172 | [39m[33m.risk-meter-safe[39m [33m{[39m
+[1m[31m>[39m[22m[90m 173 | [39m  [36m@apply[39m bg-emerald-500 shadow-[33m[[39m[36m0_0_10px_rgba[39m[36m(16, 185, 129, 0.3)[39m[33m][39m[33m;[39m
+ [90m     | [39m  [1m[31m^[39m[22m
+ [90m 174 | [39m[33m}[39m
+ [90m 175 | [39m
+
+./src/styles/globals.css
+Syntax error: C:\Users\HP\Documents\Master\web dev\projects\Final project\frontend\src\styles\globals.css The `shadow-[0_0_10px_rgba(16,` class does not exist. If `shadow-[0_0_10px_rgba(16,` is a custom class, make sure it is defined within a `@layer` directive. (173:3)
+
+ [90m 171 | [39m
+ [90m 172 | [39m[33m.risk-meter-safe[39m [33m{[39m
+[1m[31m>[39m[22m[90m 173 | [39m  [36m@apply[39m bg-emerald-500 shadow-[33m[[39m[36m0_0_10px_rgba[39m[36m(16, 185, 129, 0.3)[39m[33m][39m[33m;[39m
+ [90m     | [39m  [1m[31m^[39m[22m
+ [90m 174 | [39m[33m}[39m
+ [90m 175 | [39m
+
+    at tryRunOrWebpackError (C:\Users\HP\Documents\Master\web dev\projects\Final project\frontend\node_modules\next\dist\compiled\webpack\bundle5.js:28:311563)
+    at __webpack_require_module__ (C:\Users\HP\Documents\Master\web dev\projects\Final project\frontend\node_modules\next\dist\compiled\webpack\bundle5.js:28:131195)
+    at __nested_webpack_require_153754__ (C:\Users\HP\Documents\Master\web dev\projects\Final project\frontend\node_modules\next\dist\compiled\webpack\bundle5.js:28:130634)
+    at C:\Users\HP\Documents\Master\web dev\projects\Final project\frontend\node_modules\next\dist\compiled\webpack\bundle5.js:28:131487
+    at symbolIterator (C:\Users\HP\Documents\Master\web dev\projects\Final project\frontend\node_modules\next\dist\compiled\neo-async\async.js:1:14444)
+    at done (C:\Users\HP\Documents\Master\web dev\projects\Final project\frontend\node_modules\next\dist\compiled\neo-async\async.js:1:14824)
+    at Hook.eval [as callAsync] (eval at create (C:\Users\HP\Documents\Master\web dev\projects\Final project\frontend\node_modules\next\dist\compiled\webpack\bundle5.js:13:28867), <anonymous>:15:1)
+    at Hook.CALL_ASYNC_DELEGATE [as _callAsync] (C:\Users\HP\Documents\Master\web dev\projects\Final project\frontend\node_modules\next\dist\compiled\webpack\bundle5.js:13:26021)
+    at C:\Users\HP\Documents\Master\web dev\projects\Final project\frontend\node_modules\next\dist\compiled\webpack\bundle5.js:28:130354
+    at symbolIterator (C:\Users\HP\Documents\Master\web dev\projects\Final project\frontend\node_modules\next\dist\compiled\neo-async\async.js:1:14402)
+-- inner error --
+Syntax error: C:\Users\HP\Documents\Master\web dev\projects\Final project\frontend\src\styles\globals.css The `shadow-[0_0_10px_rgba(16,` class does not exist. If `shadow-[0_0_10px_rgba(16,` is a custom class, make sure it is defined within a `@layer` directive. (173:3)
+
+ [90m 171 | [39m
+ [90m 172 | [39m[33m.risk-meter-safe[39m [33m{[39m
+[1m[31m>[39m[22m[90m 173 | [39m  [36m@apply[39m bg-emerald-500 shadow-[33m[[39m[36m0_0_10px_rgba[39m[36m(16, 185, 129, 0.3)[39m[33m][39m[33m;[39m
+ [90m     | [39m  [1m[31m^[39m[22m
+ [90m 174 | [39m[33m}[39m
+ [90m 175 | [39m
+
+    at Object.<anonymous> (C:\Users\HP\Documents\Master\web dev\projects\Final project\frontend\node_modules\next\dist\build\webpack\loaders\css-loader\src\index.js??ruleSet[1].rules[7].oneOf[13].use[1]!C:\Users\HP\Documents\Master\web dev\projects\Final project\frontend\node_modules\next\dist\build\webpack\loaders\postcss-loader\src\index.js??ruleSet[1].rules[7].oneOf[13].use[2]!C:\Users\HP\Documents\Master\web dev\projects\Final project\frontend\src\styles\globals.css:1:7)
+    at C:\Users\HP\Documents\Master\web dev\projects\Final project\frontend\node_modules\next\dist\compiled\webpack\bundle5.js:28:915116
+    at Hook.eval [as call] (eval at create (C:\Users\HP\Documents\Master\web dev\projects\Final project\frontend\node_modules\next\dist\compiled\webpack\bundle5.js:13:28645), <anonymous>:7:1)
+    at Hook.CALL_DELEGATE [as _call] (C:\Users\HP\Documents\Master\web dev\projects\Final project\frontend\node_modules\next\dist\compiled\webpack\bundle5.js:13:25915)
+    at C:\Users\HP\Documents\Master\web dev\projects\Final project\frontend\node_modules\next\dist\compiled\webpack\bundle5.js:28:131228
+    at tryRunOrWebpackError (C:\Users\HP\Documents\Master\web dev\projects\Final project\frontend\node_modules\next\dist\compiled\webpack\bundle5.js:28:311517)
+    at __webpack_require_module__ (C:\Users\HP\Documents\Master\web dev\projects\Final project\frontend\node_modules\next\dist\compiled\webpack\bundle5.js:28:131195)
+    at __nested_webpack_require_153754__ (C:\Users\HP\Documents\Master\web dev\projects\Final project\frontend\node_modules\next\dist\compiled\webpack\bundle5.js:28:130634)
+    at C:\Users\HP\Documents\Master\web dev\projects\Final project\frontend\node_modules\next\dist\compiled\webpack\bundle5.js:28:131487
+    at symbolIterator (C:\Users\HP\Documents\Master\web dev\projects\Final project\frontend\node_modules\next\dist\compiled\neo-async\async.js:1:14444)
+
+Generated code for C:\Users\HP\Documents\Master\web dev\projects\Final project\frontend\node_modules\next\dist\build\webpack\loaders\css-loader\src\index.js??ruleSet[1].rules[7].oneOf[13].use[1]!C:\Users\HP\Documents\Master\web dev\projects\Final project\frontend\node_modules\next\dist\build\webpack\loaders\postcss-loader\src\index.js??ruleSet[1].rules[7].oneOf[13].use[2]!C:\Users\HP\Documents\Master\web dev\projects\Final project\frontend\src\styles\globals.css
+
+Import trace for requested module:
+./src/styles/globals.css
+
+
+> Build failed because of webpack errors

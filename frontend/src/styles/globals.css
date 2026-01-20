@@ -170,13 +170,13 @@ body {
 }
 
 .risk-meter-safe {
-  @apply bg-emerald-500 shadow-[0_0_10px_rgba(16, 185, 129, 0.3)];
+  @apply bg-emerald-500 shadow-[0_0_10px_#10b9814d];
 }
 
 .risk-meter-warning {
-  @apply bg-amber-500 shadow-[0_0_10px_rgba(245, 158, 11, 0.3)];
+  @apply bg-amber-500 shadow-[0_0_10px_#f59e0b4d];
 }
 
 .risk-meter-danger {
-  @apply bg-rose-500 shadow-[0_0_10px_rgba(244, 63, 94, 0.3)];
+  @apply bg-rose-500 shadow-[0_0_10px_#f43f5e4d];
 }
