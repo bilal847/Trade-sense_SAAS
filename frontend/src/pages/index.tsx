@@ -61,7 +61,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="relative min-h-screen overflow-hidden bg-[#030712] text-slate-100 pb-20">
+      <div className="relative min-h-screen overflow-hidden bg-white dark:bg-[#030712] text-slate-900 dark:text-slate-100 pb-20 transition-colors duration-300">
         {/* Background Decorative Elements */}
         <div className="absolute top-0 left-0 w-full h-[1000px] pointer-events-none z-0">
           <Hero3D />
@@ -100,7 +100,7 @@ export default function Home() {
 
             <motion.p
               variants={itemVariants}
-              className="text-xl text-slate-400 mb-12 max-w-2xl mx-auto leading-relaxed"
+              className="text-xl text-slate-600 dark:text-slate-400 mb-12 max-w-2xl mx-auto leading-relaxed"
             >
               {t('home_hero_subtitle')}
             </motion.p>
@@ -121,7 +121,7 @@ export default function Home() {
         </section>
 
         {/* Market Ticker (Marquee) */}
-        <div className="relative border-y border-slate-800/50 bg-slate-900/30 backdrop-blur-sm overflow-hidden py-4 z-10">
+        <div className="relative border-y border-slate-200 dark:border-slate-800/50 bg-slate-50/50 dark:bg-slate-900/30 backdrop-blur-sm overflow-hidden py-4 z-10">
           <div className="flex animate-shimmer absolute inset-0 pointer-events-none" />
           <motion.div
             initial={{ x: 0 }}
@@ -177,8 +177,8 @@ export default function Home() {
                 <div className={`w-14 h-14 rounded-2xl bg-${feature.color}-500/10 flex items-center justify-center mb-8 border border-${feature.color}-500/20 group-hover:scale-110 transition-transform`}>
                   <feature.icon className={`w-7 h-7 text-${feature.color}-400`} />
                 </div>
-                <h3 className="text-2xl font-bold mb-4">{feature.title}</h3>
-                <p className="text-slate-400 leading-relaxed mb-6">
+                <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">{feature.title}</h3>
+                <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-6">
                   {feature.desc}
                 </p>
                 <Link href="/learning" className="inline-flex items-center text-sm font-bold text-blue-400 hover:text-blue-300 transition-colors">
@@ -197,11 +197,11 @@ export default function Home() {
               <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center mb-8">
                 <Globe2 className="w-6 h-6 text-blue-400" />
               </div>
-              <h2 className="text-4xl lg:text-5xl font-bold mb-8 leading-tight">
+              <h2 className="text-4xl lg:text-5xl font-bold mb-8 leading-tight text-gray-900 dark:text-white">
                 Global Markets, <br />
-                <span className="text-blue-400">One Terminal.</span>
+                <span className="text-blue-600 dark:text-blue-400">One Terminal.</span>
               </h2>
-              <p className="text-lg text-slate-400 mb-10 leading-relaxed">
+              <p className="text-lg text-slate-600 dark:text-slate-400 mb-10 leading-relaxed">
                 Connect to premium liquidity sources across the globe. From Casablanca to Wall Street, trade assets with institutional speed and precision.
               </p>
 
@@ -216,7 +216,7 @@ export default function Home() {
                     <div className="w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center">
                       <div className="w-2 h-2 rounded-full bg-emerald-500" />
                     </div>
-                    <span className="text-slate-300 font-medium">{market.name}</span>
+                    <span className="text-slate-700 dark:text-slate-300 font-medium">{market.name}</span>
                   </li>
                 ))}
               </ul>
@@ -240,7 +240,7 @@ export default function Home() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 className="relative z-10 p-4 lg:p-8 glass rounded-[40px] border-white/10"
               >
-                <div className="bg-slate-900 rounded-[28px] overflow-hidden shadow-2xl">
+                <div className="bg-white dark:bg-slate-900 rounded-[28px] overflow-hidden shadow-2xl border border-gray-200 dark:border-gray-800">
                   {/* Simplified Trade Ticket Preview */}
                   <div className="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-900/50">
                     <div className="flex items-center space-x-3">
@@ -284,8 +284,8 @@ export default function Home() {
             <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/10 blur-[80px] rounded-full pointer-events-none" />
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-600/10 blur-[80px] rounded-full pointer-events-none" />
 
-            <h2 className="text-4xl lg:text-6xl font-bold mb-8">{t('home_cta_challenges')}</h2>
-            <p className="text-xl text-slate-400 mb-12 max-w-2xl mx-auto">
+            <h2 className="text-4xl lg:text-6xl font-bold mb-8 text-gray-900 dark:text-white">{t('home_cta_challenges')}</h2>
+            <p className="text-xl text-slate-600 dark:text-slate-400 mb-12 max-w-2xl mx-auto">
               Join thousands of traders and prove your skills in our proprietary evaluation program.
             </p>
             <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6">

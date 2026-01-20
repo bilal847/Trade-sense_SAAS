@@ -41,7 +41,7 @@ body {
   }
 
   .glass-morphism {
-    @apply bg-white/10 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-white/10 shadow-2xl;
+    @apply bg-slate-900/5 dark:bg-white/5 backdrop-blur-md border border-slate-200/50 dark:border-white/10 shadow-2xl;
   }
 
   .premium-card {
@@ -170,13 +170,13 @@ body {
 }
 
 .risk-meter-safe {
-  @apply bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)];
+  @apply bg-emerald-500 shadow-[0_0_10px_rgba(16, 185, 129, 0.3)];
 }
 
 .risk-meter-warning {
-  @apply bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.3)];
+  @apply bg-amber-500 shadow-[0_0_10px_rgba(245, 158, 11, 0.3)];
 }
 
 .risk-meter-danger {
-  @apply bg-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.3)];
+  @apply bg-rose-500 shadow-[0_0_10px_rgba(244, 63, 94, 0.3)];
 }
