@@ -8,11 +8,13 @@ with app.app_context():
     
     user = User.query.filter_by(email=email).first()
     if user:
-        print(f"User {email} found. Updating password...")
+        print(f"User {email} found. Updating password and flags...")
         user.set_password(password)
+        user.is_verified = True
+        user.is_active = True
     else:
         print(f"Creating new user {email}...")
-        user = User(email=email)
+        user = User(email=email, is_verified=True, is_active=True)
         user.set_password(password)
         db.session.add(user)
     

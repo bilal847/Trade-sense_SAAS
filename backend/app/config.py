@@ -19,7 +19,7 @@ class Config:
     REDIS_URL = os.environ.get('REDIS_URL') or 'redis://localhost:6379/0'
     
     # Cache TTLs (in seconds)
-    QUOTE_CACHE_TTL = int(os.environ.get('QUOTE_CACHE_TTL', 10))  # 10 seconds
+    QUOTE_CACHE_TTL = int(os.environ.get('QUOTE_CACHE_TTL', 1))  # 1 second
     OHLCV_CACHE_TTL = int(os.environ.get('OHLCV_CACHE_TTL', 60))  # 60 seconds
     
     # Timezone

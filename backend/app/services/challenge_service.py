@@ -326,8 +326,21 @@ class ChallengeService:
             user_challenge.max_equity
         )
         
-        # Update challenge status
-        user_challenge.status = evaluation['status']
+        # Update challenge status and reasons
+        new_status = evaluation['status']
+        if new_status == 'FAILED' and user_challenge.status != 'FAILED':
+            # Collect reasons
+            reasons = [r['message'] for r in evaluation.get('reasons', [])]
+            current_rules = list(user_challenge.violated_rules) if user_challenge.violated_rules else []
+            
+            # Combine without duplicates
+            for r in reasons:
+                if r not in current_rules:
+                    current_rules.append(r)
+            
+            user_challenge.violated_rules = current_rules
+            
+        user_challenge.status = new_status
         user_challenge.last_eval_at = datetime.utcnow()
         
         # Save changes

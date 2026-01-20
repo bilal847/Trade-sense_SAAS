@@ -46,7 +46,7 @@ class RiskService:
         
         # Initialize result
         result = {
-            'status': 'IN_PROGRESS',
+            'status': user_challenge.status if user_challenge.status == 'FAILED' else 'IN_PROGRESS',
             'reasons': [],
             'metrics': {
                 'daily_drawdown': daily_drawdown,

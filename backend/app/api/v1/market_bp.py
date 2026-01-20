@@ -3,6 +3,9 @@ from flask_jwt_extended import jwt_required
 from app.services import MarketDataService
 from app.models import Instrument
 from app import db
+import logging
+
+logger = logging.getLogger(__name__)
 
 market_bp = Blueprint('market', __name__, url_prefix='/market')
 market_service = MarketDataService()
@@ -31,6 +34,39 @@ def get_quote():
             'instrument': instrument.to_dict(),
             'quote': quote,
             'timestamp': quote.get('ts', int(__import__('time').time() * 1000))
+        }), 200
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@market_bp.route('/quotes', methods=['POST'])
+def get_quotes():
+    """Get current quotes for multiple instruments."""
+    try:
+        data = request.get_json()
+        instrument_ids = data.get('instrument_ids', [])
+        
+        if not instrument_ids:
+            return jsonify({'error': 'instrument_ids is required'}), 400
+        
+        results = {}
+        for inst_id in instrument_ids:
+            instrument = Instrument.query.get(inst_id)
+            if instrument:
+                try:
+                    quote = market_service.get_quote(
+                        instrument.provider_symbol,
+                        instrument.provider
+                    )
+                    results[inst_id] = quote
+                except Exception as e:
+                    logger.warning(f"Failed to get quote for {inst_id}: {e}")
+                    results[inst_id] = None
+        
+        return jsonify({
+            'quotes': results,
+            'timestamp': int(__import__('time').time() * 1000)
         }), 200
     
     except Exception as e:

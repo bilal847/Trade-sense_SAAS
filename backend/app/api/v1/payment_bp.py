@@ -26,8 +26,8 @@ def mock_checkout():
         if not plan or amount is None:
             return jsonify({'error': 'plan and amount are required'}), 400
         
-        if plan not in ['BASIC', 'PREMIUM', 'PRO']:
-            return jsonify({'error': 'Invalid plan. Must be BASIC, PREMIUM, or PRO'}), 400
+        if plan not in ['STUDENT', 'ELITE', 'MASTER', 'BASIC', 'PREMIUM', 'PRO']:
+            return jsonify({'error': 'Invalid plan. Must be STUDENT, ELITE, or MASTER'}), 400
         
         if amount <= 0:
             return jsonify({'error': 'Amount must be positive'}), 400
@@ -82,24 +82,28 @@ def mock_confirm(payment_id):
         # Find the challenge template based on plan or use default
         # For simplicity, we create a new challenge based on the plan
         # STARTING CAPITAL based on plan
-        starting_capital = 10000.0
-        if payment.plan == 'PRO':
-            starting_capital = 50000.0
-        elif payment.plan == 'ELITE':
+        starting_capital = 10000.0  # Default (STUDENT)
+        if payment.plan == 'ELITE':
             starting_capital = 100000.0
+        elif payment.plan == 'MASTER':
+            starting_capital = 250000.0
+        elif payment.plan == 'PRO':  # Legacy support
+            starting_capital = 50000.0
             
         # Create a new active challenge for the user
         user_challenge = UserChallenge(
             user_id=user_id,
             challenge_id=1, # Default challenge template ID
-            status='ACTIVE',
-            start_date=datetime.utcnow(),
-            end_date=datetime.utcnow() + timedelta(days=30),
-            initial_balance=starting_capital,
+            status='IN_PROGRESS',
+            start_time=datetime.utcnow(),
+            end_time=datetime.utcnow() + timedelta(days=30),
+            start_balance=starting_capital,
             current_equity=starting_capital,
-            max_daily_loss=starting_capital * 0.05,
-            max_total_loss=starting_capital * 0.10,
-            profit_target=starting_capital * 0.10
+            daily_start_equity=starting_capital,
+            max_equity=starting_capital,
+            min_equity=starting_capital,
+            min_equity_all_time=starting_capital,
+            min_equity_today=starting_capital
         )
         
         db.session.add(user_challenge)

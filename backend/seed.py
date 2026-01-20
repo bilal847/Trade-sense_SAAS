@@ -20,6 +20,8 @@ def seed_database():
     app = create_app()
     
     with app.app_context():
+        print("Creating tables...")
+        db.create_all()
         print("Starting database seeding...")
         
         # Create default challenge if none exists
@@ -31,6 +33,7 @@ def seed_database():
                 daily_max_loss=0.05,  # 5% daily max loss
                 total_max_loss=0.10,  # 10% total max loss
                 profit_target=0.10,   # 10% profit target
+                max_trade_quantity=5.0, # 5 units per trade limit
                 is_active=True
             )
             db.session.add(default_challenge)

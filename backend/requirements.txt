@@ -14,3 +14,6 @@ flask-swagger-ui==4.11.1
 pandas>=2.2.0
 numpy>=1.26.0
 gunicorn==21.2.0
+feedparser==6.0.10
+newspaper3k==0.2.8
+lxml-html-clean

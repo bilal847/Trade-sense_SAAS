@@ -51,6 +51,7 @@ CREATE TABLE IF NOT EXISTS challenges (
     total_max_loss DECIMAL(5,4) NOT NULL DEFAULT 0.1000,
     profit_target DECIMAL(5,4) NOT NULL DEFAULT 0.1000,
     max_duration_days INTEGER,
+    max_trade_quantity DECIMAL(15,8),
     is_active BOOLEAN DEFAULT TRUE,
     rules_json JSONB,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

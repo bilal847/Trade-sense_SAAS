@@ -14,6 +14,7 @@ class Challenge(BaseModel):
     total_max_loss = db.Column(Float, nullable=False, default=0.10)  # 10%
     profit_target = db.Column(Float, nullable=False, default=0.10)  # 10%
     max_duration_days = db.Column(Integer, nullable=True)  # None means no time limit
+    max_trade_quantity = db.Column(Float, nullable=True)  # Max quantity allowed per trade
     is_active = db.Column(Boolean, default=True)
     rules_json = db.Column(JSON, nullable=True)  # Additional challenge-specific rules
     

@@ -71,7 +71,21 @@ class MoroccoProvider(BaseProvider):
 
             if instrument in self._last_known_values:
                 cached_value = self._last_known_values[instrument].copy()
-                cached_value['ts'] = int(time.time() * 1000)  # Update timestamp
+                current_time_ms = int(time.time() * 1000)
+                
+                # Jitter Mechanism: Add small random fluctuation based on time
+                # We use a mix of random and time-based sine for "smoother" but unpredictable moves
+                import math
+                import random
+                
+                # Base jitter: +/- 0.05%
+                jitter_factor = 1.0 + (math.sin(time.time() * 0.5) * 0.0005) + (random.uniform(-0.0002, 0.0002))
+                
+                cached_value['last'] = round(cached_value['last'] * jitter_factor, 2)
+                cached_value['bid'] = round(cached_value['last'] * 0.9998, 2)
+                cached_value['ask'] = round(cached_value['last'] * 1.0002, 2)
+                cached_value['ts'] = current_time_ms
+                
                 return cached_value
             else:
                 # Return a default value if instrument not found

@@ -8,7 +8,46 @@ challenge_bp = Blueprint('challenge', __name__, url_prefix='/challenges')
 challenge_service = ChallengeService()
 
 
+
+@challenge_bp.route('/my', methods=['GET'])
+@jwt_required()
+def get_my_challenges():
+    """Get the current user's active challenges."""
+    try:
+        user_id = get_jwt_identity()
+        
+        # Get all challenges that are either IN_PROGRESS or ACTIVE
+        # This handles both new logic (IN_PROGRESS) and legacy logic (ACTIVE)
+        user_challenges = UserChallenge.query.filter(
+            UserChallenge.user_id == user_id,
+            UserChallenge.status.in_(['IN_PROGRESS', 'ACTIVE'])
+        ).order_by(UserChallenge.created_at.desc()).all()
+        
+        # Also get other statuses if needed, or just return all
+        all_challenges = UserChallenge.query.filter_by(
+            user_id=user_id
+        ).order_by(UserChallenge.created_at.desc()).all()
+        
+        # Helper function to include nested challenge
+        def serialize_with_challenge(uc):
+            data = uc.to_dict()
+            # Get the associated challenge
+            challenge = Challenge.query.get(uc.challenge_id)
+            if challenge:
+                data['challenge'] = challenge.to_dict()
+            return data
+        
+        return jsonify({
+            'active_challenges': [serialize_with_challenge(uc) for uc in user_challenges],
+            'all_challenges': [serialize_with_challenge(uc) for uc in all_challenges]
+        }), 200
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
 @challenge_bp.route('', methods=['GET'])
+@challenge_bp.route('/', methods=['GET'])
 def get_challenges():
     """Get all available challenges."""
     try:
@@ -113,6 +152,24 @@ def execute_trade(user_challenge_id):
         
         if qty <= 0:
             return jsonify({'error': 'qty must be positive'}), 400
+        
+        # Check trade quantity limit if challenge has one
+        if user_challenge.challenge.max_trade_quantity and qty > user_challenge.challenge.max_trade_quantity:
+            # 1. Set status to FAILED
+            user_challenge.status = 'FAILED'
+            
+            # 2. Add reason to violated_rules
+            current_rules = list(user_challenge.violated_rules) if user_challenge.violated_rules else []
+            if "Trade Quantity Limit Exceeded" not in current_rules:
+                current_rules.append("Trade Quantity Limit Exceeded")
+                user_challenge.violated_rules = current_rules
+            
+            db.session.commit()
+            
+            return jsonify({
+                'error': f'Challenge FAILED: Trade quantity {qty} exceeds limit of {user_challenge.challenge.max_trade_quantity}',
+                'user_challenge': user_challenge.to_dict()
+            }), 400
         
         # Execute the trade
         trade = challenge_service.execute_trade(

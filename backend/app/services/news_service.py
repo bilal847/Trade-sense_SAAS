@@ -11,35 +11,35 @@ class NewsService:
     MOCK_ARTICLES = {
         "mock_fed_2026": {
             "title": "Fed Hits Infinity Target: Inflation Stabilizes at 2%",
-            "text": "WASHINGTON (Jan 18, 2026) — The Federal Reserve announced today that the U.S. economy has successfully achieved a 'soft landing' with inflation stabilizing at exactly 2.0% for the third consecutive quarter.\n\nFed Chair Jerome Powell, in his final year, credited the central bank's patient approach. 'The job is done, but the vigilance continues,' he stated. Markets rallied, with the Dow Jones Industrial Average crossing 45,000 for the first time.\n\nEconomists are now shifting their focus to the booming space-economy sector, which has contributed an estimated 0.5% to GDP growth this year.",
+            "text": "WASHINGTON (Jan 18, 2026) — The Federal Reserve announced today that the U.S. economy has successfully achieved a 'soft landing' with inflation stabilizing at exactly 2.0% for the third consecutive quarter. EURUSD reacted strongly.",
             "image": "https://images.unsplash.com/photo-1604594849809-dfedbc82710f?auto=format&fit=crop&q=80&w=1000",
             "authors": ["Economic Staff"],
             "publish_date": "2026-01-18"
         },
         "mock_ai_2026": {
             "title": "Global Markets Rally on 2025 Earnings Beat",
-            "text": "NEW YORK (Jan 18, 2026) — A wave of stronger-than-expected Q4 2025 earnings from major tech conglomerates has sent global indices soaring.\n\nThe AI sector continues to mature, with companies like NeuralLink and OpenAI (now public) reporting massive revenue growth from enterprise integration. 'AI isn't just a tool anymore; it's the operating system of the global economy,' said analyst Sarah Jenkins.\n\nCloud computing costs have plummeted by 40% thanks to new quantum-hybrid data centers, boosting profit margins across the board.",
+            "text": "NEW YORK (Jan 18, 2026) — A wave of stronger-than-expected Q4 2025 earnings from major tech conglomerates has sent global indices soaring. NAS100 pushed to record highs.",
             "image": "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=1000",
             "authors": ["Tech Desk"],
             "publish_date": "2026-01-18"
         },
         "mock_quantum": {
             "title": "Quantum Computing Breakthrough Shifts Crypto Landscape",
-            "text": "ZURICH (Jan 16, 2026) — Researchers at ETH Zurich have demonstrated a fault-tolerant quantum processor capable of cracking legacy encryption, sending shockwaves through the cryptocurrency market.\n\nHowever, major chains like Ethereum and Bitcoin had already implemented 'quantum-resistant' upgrades (EIP-9999 and BIP-420 respectively) late last year. The market dip was short-lived as investors realized the blockchain infrastructure remains secure.\n\n'This is the Y2K of crypto that never happened,' quipped crypto historian Vitalik Buterin.",
+            "text": "ZURICH (Jan 16, 2026) — Researchers at ETH Zurich have demonstrated a fault-tolerant quantum processor. BTCUSDT and ETHUSDT remained stable.",
             "image": "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&q=80&w=1000",
             "authors": ["Crypto Insider"],
             "publish_date": "2026-01-16"
         },
         "mock_mars": {
             "title": "SpaceX Announces Mars Cargo Mission Timeline",
-            "text": "BOCA CHICA (Jan 17, 2026) — Elon Musk confirmed that the first uncrewed Starship cargo missions to Mars will launch in the Q4 2026 transfer window.\n\nThe mission aims to deploy a synthesizer plant capable of producing fuel from the Martian atmosphere. 'We are going not to visit, but to build,' Musk tweeted.\n\nAerospace stocks surged on the news, with suppliers like Lockheed Martin and Boeing seeing 5% gains.",
+            "text": "BOCA CHICA (Jan 17, 2026) — Elon Musk confirmed that the first uncrewed Starship cargo missions to Mars will launch in 2026.",
             "image": "https://images.unsplash.com/photo-1541185933-710f50b908eb?auto=format&fit=crop&q=80&w=1000",
             "authors": ["Space Wire"],
             "publish_date": "2026-01-17"
         },
         "mock_fusion": {
             "title": "Green Energy Adoption Hits 40% Globally",
-            "text": "PARIS (Jan 15, 2026) — The International Energy Agency (IEA) reports that renewable sources now generate 40% of the world's electricity, a milestone reached four years ahead of schedule.\n\nThe surge is driven by breakthroughs in solid-state battery storage and the commercialization of compact nuclear fusion reactors. Oil prices have dipped to $65/barrel as demand for fossil fuels continues its structural decline.",
+            "text": "PARIS (Jan 15, 2026) — Renewable sources now generate 40% of the world's electricity. USOIL prices stabilized at $65/barrel.",
             "image": "https://images.unsplash.com/photo-1497436072909-60f360e1d4b0?auto=format&fit=crop&q=80&w=1000",
             "authors": ["Green Earth"],
             "publish_date": "2026-01-15"
