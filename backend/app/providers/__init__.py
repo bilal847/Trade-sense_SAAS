@@ -1,6 +1,7 @@
 from app.providers.base_provider import BaseProvider
 from app.providers.binance_provider import BinanceProvider
 from app.providers.morocco_provider import MoroccoProvider
+from app.providers.yahoo_provider import YahooProvider
 
 # Try to import MT5 provider, but don't fail if not available
 try:

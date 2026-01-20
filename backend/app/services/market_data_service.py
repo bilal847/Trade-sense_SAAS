@@ -1,7 +1,7 @@
 import time
 import random
 from typing import Dict, List, Optional
-from app.providers import BinanceProvider, MT5Provider, MoroccoProvider
+from app.providers import BinanceProvider, MT5Provider, MoroccoProvider, YahooProvider
 from app.utils import InMemoryCache
 import logging
 
@@ -32,7 +32,18 @@ class MarketDataService:
             self.morocco_provider = MoroccoProvider()
         except Exception as e:
             logger.error(f"Failed to initialize Morocco provider: {e}")
+        try:
+            self.morocco_provider = MoroccoProvider()
+        except Exception as e:
+            logger.error(f"Failed to initialize Morocco provider: {e}")
             self.morocco_provider = None
+            
+        try:
+            self.yahoo_provider = YahooProvider()
+        except Exception as e:
+            logger.error(f"Failed to initialize Yahoo provider: {e}")
+            self.yahoo_provider = None
+
         
         # Map providers to their instances
         self.providers = {}
@@ -42,6 +53,8 @@ class MarketDataService:
             self.providers['MT5'] = self.mt5_provider
         if self.morocco_provider:
             self.providers['MOROCCO'] = self.morocco_provider
+        if self.yahoo_provider:
+            self.providers['YAHOO'] = self.yahoo_provider
         
         # Initialize cache
         self.cache = InMemoryCache()
@@ -78,11 +91,29 @@ class MarketDataService:
         if cached_result:
             return self._apply_dynamic_jitter(cached_result)
         
-        # Get provider instance
-        provider_instance = self.providers.get(provider.upper())
+        # Redirect logic: Use Yahoo if MT5 is requested (since it's disabled) or for Binance reliability
+        # This acts as a unified data layer adapter
+        target_provider = provider.upper()
+        provider_instance = self.providers.get(target_provider)
+
+        # If standard provider is missing or we want to force Yahoo for specific ones
+        if (target_provider == 'MT5' or target_provider == 'BINANCE') and self.yahoo_provider:
+            provider_instance = self.yahoo_provider
+            
         if not provider_instance:
-            raise ValueError(f"Provider {provider} not available")
-        
+            if target_provider == 'MT5': # Soft fail for mock if everything fails
+                 # Try to force a mock result instead of crashing
+                 pass 
+            else:
+                 raise ValueError(f"Provider {provider} not available")
+                 
+        if not provider_instance:
+             # Just in case yahoo failed too, we might still have the original disabled instance 
+             # (MT5 instance behaves as mock if initialized but disabled)
+             provider_instance = self.providers.get(target_provider)
+             if not provider_instance:
+                 raise ValueError(f"Provider {provider} not available")
+
         # Get fresh data
         result = provider_instance.get_quote(instrument)
         
@@ -119,10 +150,19 @@ class MarketDataService:
         if cached_result:
             return cached_result
         
-        # Get provider instance
-        provider_instance = self.providers.get(provider.upper())
+        # Get provider instance (with redirection)
+        target_provider = provider.upper()
+        provider_instance = self.providers.get(target_provider)
+
+        # Redirect MT5/Binance to Yahoo
+        if (target_provider == 'MT5' or target_provider == 'BINANCE') and self.yahoo_provider:
+            provider_instance = self.yahoo_provider
+
         if not provider_instance:
-            raise ValueError(f"Provider {provider} not available")
+            # Fallback to original for potential mock handling
+            provider_instance = self.providers.get(target_provider)
+            if not provider_instance:
+                raise ValueError(f"Provider {provider} not available")
         
         # Get fresh data
         result = provider_instance.get_ohlcv(instrument, timeframe, limit)
