@@ -24,7 +24,11 @@ def create_app(config_class=Config):
     jwt.init_app(app)
     
     # Enable CORS
-    CORS(app)
+    CORS(app, resources={r"/api/*": {"origins": "*"}})
+
+    @app.route('/')
+    def health_check():
+        return {"status": "healthy", "service": "TradeSense Backend API"}, 200
 
     # Import Blueprints
     from app.api.v1.auth_bp import auth_bp
